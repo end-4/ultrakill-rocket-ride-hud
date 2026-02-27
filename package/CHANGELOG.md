@@ -1,3 +1,8 @@
+## 1.0.2
+
+- Slightly tweaked wall jump icon.
+- Fixed an error that would occur while a powerup is active.
+
 ## 1.0.1
 
 - Updated to work post-revamp.

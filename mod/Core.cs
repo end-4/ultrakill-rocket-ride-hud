@@ -15,7 +15,7 @@ namespace WallJumpHUD
     {
         public const string PluginGUID = "trpg.uk.walljumphud";
         public const string PluginName = "WallJumpHUD";
-        public const string PluginVersion = "1.0.1";
+        public const string PluginVersion = "1.0.2";
 
         public static string workingPath;
         public static string workingDir;
