@@ -71,12 +71,12 @@ namespace WallJumpHUD
             SetRocketIndicatorsColor();
             SetRocketIndicatorsActive(ConfigManager.crosshairRocketShow.value);
 
-            RocketRideListener.OnRocketRideCountChanged += SetRocketIndicators;
+            NewMovementListener.OnRocketRideCountChanged += SetRocketIndicators;
         }
 
         private void OnDestroy()
         {
-            RocketRideListener.OnRocketRideCountChanged -= SetRocketIndicators;
+            NewMovementListener.OnRocketRideCountChanged -= SetRocketIndicators;
         }
 
         // show/hide indicators by count

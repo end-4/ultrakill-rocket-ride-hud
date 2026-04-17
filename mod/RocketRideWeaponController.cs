@@ -57,17 +57,17 @@ namespace WallJumpHUD
             SetStuffActive(ConfigManager.weaponRocketShow.value);
 
             // subscribe to listener events
-            RocketRideListener.OnRocketRideStarted += Increment;
-            RocketRideListener.OnRocketRideEnded += OnRideEnded;
-            RocketRideListener.OnRocketRideCountChanged += SetRides;
-            //Core.Logger.LogInfo("RocketRideWeaponController subscribed to RocketRideListener events");
+            NewMovementListener.OnRocketRideStarted += Increment;
+            NewMovementListener.OnRocketRideEnded += OnRideEnded;
+            NewMovementListener.OnRocketRideCountChanged += SetRides;
+            //Core.Logger.LogInfo("RocketRideWeaponController subscribed to NewMovementListener events");
         }
 
         private void OnDestroy()
         {
-            RocketRideListener.OnRocketRideStarted -= Increment;
-            RocketRideListener.OnRocketRideEnded -= OnRideEnded;
-            RocketRideListener.OnRocketRideCountChanged -= SetRides;
+            NewMovementListener.OnRocketRideStarted -= Increment;
+            NewMovementListener.OnRocketRideEnded -= OnRideEnded;
+            NewMovementListener.OnRocketRideCountChanged -= SetRides;
             //Core.Logger.LogInfo("RocketRideWeaponController OnDestroy");
         }
 
@@ -110,7 +110,7 @@ namespace WallJumpHUD
         private void OnRideEnded()
         {
             // leave as-is; change to ResetRides() here if you want per-run behavior
-            //Core.Logger.LogInfo("RocketRideListener reported ride ended");
+            //Core.Logger.LogInfo("NewMovementListener reported ride ended");
         }
 
         public void UpdateColor()
