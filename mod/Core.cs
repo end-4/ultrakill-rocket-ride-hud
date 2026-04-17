@@ -10,7 +10,6 @@ namespace WallJumpHUD
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInDependency("com.eternalUnion.pluginConfigurator")]
-    [BepInDependency("trpg.archipelagoultrakill", BepInDependency.DependencyFlags.SoftDependency)]
     public class Core : BaseUnityPlugin
     {
         public const string PluginGUID = "trpg.uk.walljumphud";
@@ -24,13 +23,10 @@ namespace WallJumpHUD
 
         public static AssetBundle bundle = AssetBundle.LoadFromMemory(Properties.Resources.trpg_walljumphud);
 
-        public static bool IsArchipelagoLoaded { get; private set; }
-
         public static int MaxWalljumps
         {
             get
             {
-                if (IsArchipelagoLoaded) return GetArchipelagoWallJumps();
                 return 3;
             }
         }
@@ -39,8 +35,7 @@ namespace WallJumpHUD
         {
             get
             {
-                if (ConfigManager.weaponMatch.value) return ColorBlindSettings.Instance.staminaColor;
-                else return ConfigManager.weaponColor.value;
+                return ConfigManager.weaponWallJumpColor.value;
             }
         }
 
@@ -48,8 +43,7 @@ namespace WallJumpHUD
         {
             get
             {
-                if (ConfigManager.crosshairMatch.value) return ColorBlindSettings.Instance.staminaColor;
-                else return ConfigManager.crosshairColor.value;
+                return ConfigManager.crosshairWallJumpColor.value;
             }
         }
 
@@ -62,25 +56,6 @@ namespace WallJumpHUD
             workingDir = Path.GetDirectoryName(workingPath);
 
             ConfigManager.Init();
-
-            IsArchipelagoLoaded = false;
-            foreach (var plugin in Chainloader.PluginInfos)
-            {
-                if (plugin.Value.Metadata.GUID == "trpg.archipelagoultrakill")
-                {
-                    IsArchipelagoLoaded = true;
-                    Logger.LogInfo("Archipelago is loaded.");
-                    break;
-                }
-            }
-        }
-
-        private static int GetArchipelagoWallJumps()
-        {
-            if (ArchipelagoULTRAKILL.Components.PlayerHelper.CurrentPowerup == ArchipelagoULTRAKILL.Structures.Powerup.WalljumpLimiter) return 0;
-            if (ArchipelagoULTRAKILL.Components.PlayerHelper.CurrentPowerup == ArchipelagoULTRAKILL.Structures.Powerup.DoubleJump) return 3;
-            if (ArchipelagoULTRAKILL.Core.DataExists()) return ArchipelagoULTRAKILL.Core.data.walljumps;
-            return 3;
         }
     }
 }

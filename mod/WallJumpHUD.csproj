@@ -21,20 +21,18 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Reference Include="ArchipelagoULTRAKILL">
-      <HintPath>D:\steam games\steamapps\common\ULTRAKILL\BepInEx\plugins\TRPG-Archipelago\ArchipelagoULTRAKILL.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>D:\steam games\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="PluginConfigurator">
-      <HintPath>D:\steam games\steamapps\common\ULTRAKILL\BepInEx\plugins\PluginConfigurator\PluginConfigurator.dll</HintPath>
-    </Reference>
+	<Reference Include="Assembly-CSharp">
+	  <SpecificVersion>False</SpecificVersion>
+	  <HintPath>libs\Managed\Assembly-CSharp.dll</HintPath>
+	</Reference>
+	<Reference Include="PluginConfigurator">
+		<HintPath>..\..\_Common Libraries_\Others\PluginConfigurator.dll</HintPath>
+	</Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:\steam games\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>libs\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:\steam games\steamapps\common\ULTRAKILL\ULTRAKILL_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>libs\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   

@@ -4,3 +4,4 @@ obj/
 package/*.dll
 *.ai
 *.zip
+libs/
