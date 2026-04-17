@@ -1,15 +1,25 @@
-# WallJumpHUD
+# Rocket ride HUD
 
-![Screenshot 2024-01-17 231942](https://github.com/TRPG0/UK-WallJumpHUD/assets/80716066/84b560a2-8b1a-4ae4-8166-b9ef2d2766c5)
+- Displays number of rocket rides left before they'll simply drop. You get 5 rides, and the 6th rocket can still be mounted but will only fly downwards
+- Useful for Cyber Grind if you absolutely need to cheese the Mirror Reaper like me
 
-Customizable HUD and crosshair indicators for wall jumps. Both indicators can be hidden, and colors can be changed.
+# Manual build/installation
 
-Install via [Thunderstore](https://thunderstore.io/c/ultrakill/p/TRPG/WallJumpHUD/), or by following the steps below:
+0. In the rare case a non-nerd actually compiles from source: by `/` I mean `\` on Windows
+1. Create `mod/libs/Managed`
+2. Open ULTRAKILL's folder: Steam library -> ULTRAKILL -> click on gear icon, "Manage" > "Browse local files"
+3. Find the following DLL files in `ULTRAKILL_Data/Managed` and copy to the folder you created:
+    - Assembly-CSharp.dll
+    - Unity.TextMeshPro.dll
+    - UnityEngine.UI.dll
+4. Install the PluginConfigurator mod
+5. Open mods folder: Go to r2modman settings > "Browse profile folder", head to `BepInEx/plugins`
+6. Copy `EternalsTeam-PluginConfigurator/PluginConfigurator/PluginConfigurator.dll` to the folder you created
+7. In Visual Studio Dev Powershell, run `cd mod` and then `msbuild /p:Configuration=Release`
+8. Find the built DLL of the mod in `mod/bin/Release/net472`. Copy it to the mods folder.
 
-1. Download and install [BepInEx 5.4.21](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.21) in your ULTRAKILL root folder. *Do not use any pre-release versions of BepInEx 6.*
+# Notes
 
-2. Start ULTRAKILL once so that BepInEx can create its required configuration files.
-
-3. Install [PluginConfigurator](https://github.com/eternalUnion/UKPluginConfigurator).
-
-4. Download `WallJumpHUD.zip` from the [Releases](https://github.com/TRPG0/BRC-NoTutorial/releases) page and extract the contents into `BepInEx\plugins`.
+- Thank you TRPG0 for the original mod [WallJumpHUD](https://github.com/TRPG0/UK-WallJumpHUD)
+- Yes, an LLM was involved. And no, I've never written C# before this
+- Why is the sprite for rocket rides in weapon HUD loaded through file not asset bundle? I'm too lazy to install Unity editor for now... I need it to edit this right?
