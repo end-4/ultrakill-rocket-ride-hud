@@ -13,4 +13,10 @@
         Right,
         Bottom
     }
+
+    public enum RocketAlignment
+    {
+        Top,
+        Bottom
+    }
 }

@@ -16,11 +16,10 @@ namespace WallJumpHUD
         {
             get
             {
-                if (ConfigManager.crosshairAlignment.value == CrosshairAlignment.Left || ConfigManager.crosshairAlignment.value == CrosshairAlignment.Top) return Direction.Reverse;
+                if (ConfigManager.crosshairWallJumpAlignment.value == CrosshairAlignment.Left || ConfigManager.crosshairWallJumpAlignment.value == CrosshairAlignment.Top) return Direction.Reverse;
                 else return Direction.Normal;
             }
         }
-
         public float time = 2;
         public float maxTime = 2;
         public float minTime = 0;
@@ -71,8 +70,9 @@ namespace WallJumpHUD
             crosshair2.sprite = Core.bundle.LoadAsset<Sprite>("assets/2.png");
             crosshair3.sprite = Core.bundle.LoadAsset<Sprite>("assets/3.png");
 
-            SetIconsRotation(ConfigManager.crosshairAlignment.value);
-            SetIconsActive(ConfigManager.crosshairShow.value);
+            SetIconsRotation(ConfigManager.crosshairWallJumpAlignment.value);
+            SetIconsActive(ConfigManager.crosshairWallJumpShow.value);
+            UpdateColor();
             SetWallJumps(Core.MaxWalljumps);
             NewMovementListener.OnWallJumpsChanged += SetWallJumps;
             PowerUpMeterListener.OnPowerUpStarted += OnPowerUpStarted;
@@ -88,7 +88,7 @@ namespace WallJumpHUD
 
         private void Update()
         {
-            if (ConfigManager.crosshairShow.value)
+            if (ConfigManager.crosshairWallJumpShow.value)
             {
                 if (nmT.Field<float>("fallTime").Value > 0.25) time = maxTime;
                 else if (time > minTime) time -= Time.deltaTime;
@@ -104,6 +104,15 @@ namespace WallJumpHUD
             crosshair2.gameObject.SetActive(active);
             crosshair3.gameObject.SetActive(active);
         }
+
+        public void UpdateColor()
+        {
+            Color c = ConfigManager.crosshairWallJumpColor.value;
+            if (crosshair1 != null) crosshair1.color = c;
+            if (crosshair2 != null) crosshair2.color = c;
+            if (crosshair3 != null) crosshair3.color = c;
+        }
+
 
         public void SetIconsRotation(CrosshairAlignment alignment)
         {
@@ -132,6 +141,7 @@ namespace WallJumpHUD
                     break;
                 default: break;
             }
+
         }
 
         public void OnPowerUpStarted()
@@ -142,7 +152,7 @@ namespace WallJumpHUD
             float radiusDist = 12;
             float parallelDist = 6;
 
-            switch (ConfigManager.crosshairAlignment.value)
+            switch (ConfigManager.crosshairWallJumpAlignment.value)
             {
                 case CrosshairAlignment.Top:
                     crosshair1.GetComponent<Transform>().localPosition = new Vector3(parallelDist, radiusDist, 0);

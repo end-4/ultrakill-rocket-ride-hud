@@ -44,7 +44,7 @@ namespace WallJumpHUD
             text.text = Core.MaxWalljumps.ToString();
             text.color = Core.WeaponColor;
 
-            SetStuffActive(ConfigManager.weaponShow.value);
+            SetStuffActive(ConfigManager.weaponWallJumpShow.value);
             NewMovementListener.OnWallJumpsChanged += SetWallJumps;
             PowerUpMeterListener.OnPowerUpStarted += OnPowerUpChange;
             PowerUpMeterListener.OnPowerUpEnded += OnPowerUpChange;

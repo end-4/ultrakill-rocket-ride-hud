@@ -8,6 +8,7 @@ namespace WallJumpHUD.Patches
         public static void Postfix()
         {
             StatsManager.Instance.crosshair?.GetOrAddComponent<WallJumpCrosshairController>();
+            StatsManager.Instance.crosshair?.GetOrAddComponent<RocketCrosshairController>();
         }
     }
 }

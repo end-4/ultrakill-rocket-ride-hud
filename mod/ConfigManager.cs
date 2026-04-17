@@ -10,53 +10,73 @@ namespace WallJumpHUD
     {
         public static PluginConfigurator config = null;
 
-        public static BoolField weaponShow;
-        public static BoolField weaponMatch;
-        public static ColorField weaponColor;
+        public static BoolField weaponWallJumpShow;
+        public static ColorField weaponWallJumpColor;
+        public static BoolField crosshairWallJumpShow;
+        public static EnumField<CrosshairAlignment> crosshairWallJumpAlignment;
+        public static ColorField crosshairWallJumpColor;
 
-        public static BoolField crosshairShow;
-        public static EnumField<CrosshairAlignment> crosshairAlignment;
-        public static BoolField crosshairMatch;
-        public static ColorField crosshairColor;
+        public static BoolField weaponRocketShow;
+        public static ColorField weaponRocketColor;
+        public static BoolField crosshairRocketShow;
+        public static ColorField crosshairRocketColor;
+        public static EnumField<RocketAlignment> crosshairRocketAlignment;
+        public static FloatField crosshairRocketOffset;
+        public static FloatField crosshairRocketThickness;
+        public static FloatField crosshairRocketDash;
+        public static FloatField crosshairRocketGap;
 
         public static void Init()
         {
             if (config != null) return;
-
             config = PluginConfigurator.Create("WallJumpHUD", Core.PluginGUID);
 
             string iconPath = Path.Combine(Core.workingDir, "icon.png");
             if (File.Exists(iconPath)) config.SetIconWithURL(iconPath);
 
-            new ConfigHeader(config.rootPanel, "--WEAPON HUD--");
-            new ConfigHeader(config.rootPanel, "Weapon HUD icon is only visible if HUD type is Standard.", 12);
-            weaponShow = new BoolField(config.rootPanel, "SHOW ON WEAPON HUD", "weaponShow", true);
-            weaponShow.postValueChangeEvent += (bool e) =>
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            new ConfigHeader(config.rootPanel, "-- DISPLAY --");
+            new ConfigHeader(config.rootPanel, "Weapon indicators only visible on Standard HUD", 12);
+            weaponWallJumpShow = new BoolField(config.rootPanel, "Wall jumps on Weapon HUD", "weaponShow", true);
+            weaponWallJumpShow.postValueChangeEvent += (bool e) =>
             {
                 if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.SetStuffActive(e);
             };
 
-            weaponMatch = new BoolField(config.rootPanel, "MATCH STAMINA COLOR", "weaponMatch", false);
-            weaponMatch.postValueChangeEvent += (bool e) =>
-            {
-                if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.UpdateColor();
-            };
-
-            weaponColor = new ColorField(config.rootPanel, "WEAPON HUD COLOR", "weaponColor", Color.white);
-            weaponColor.postValueChangeEvent += (Color e) =>
-            {
-                if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.UpdateColor();
-            };
-
-            new ConfigHeader(config.rootPanel, "--CROSSHAIR HUD--");
-            crosshairShow = new BoolField(config.rootPanel, "SHOW ON CROSSHAIR HUD", "crosshairShow", true);
-            crosshairShow.postValueChangeEvent += (bool e) =>
+            crosshairWallJumpShow = new BoolField(config.rootPanel, "Wall jumps on Crosshair", "crosshairShow", true);
+            crosshairWallJumpShow.postValueChangeEvent += (bool e) =>
             {
                 if (WallJumpCrosshairController.Instance != null) WallJumpCrosshairController.Instance.SetIconsActive(e);
             };
 
-            crosshairAlignment = new EnumField<CrosshairAlignment>(config.rootPanel, "ALIGNMENT", "crosshairAlignment", CrosshairAlignment.Right);
-            crosshairAlignment.postValueChangeEvent += (CrosshairAlignment e) =>
+            weaponRocketShow = new BoolField(config.rootPanel, "Rocket rides on Weapon HUD", "weaponRocketShow", true);
+            weaponRocketShow.postValueChangeEvent += (bool e) =>
+            {
+                if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.SetStuffActive(e);
+            };
+
+            crosshairRocketShow = new BoolField(config.rootPanel, "Rocket rides on Crosshair", "crosshairRocketShow", true);
+            crosshairRocketShow.postValueChangeEvent += (bool e) =>
+            {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsActive(e);
+            };
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            new ConfigHeader(config.rootPanel, "-- CUSTOMIZATION --");
+            weaponWallJumpColor = new ColorField(config.rootPanel, "Wall jump: Weapon HUD", "weaponColor", Color.white);
+            weaponWallJumpColor.postValueChangeEvent += (Color e) =>
+            {
+                if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.UpdateColor();
+            };
+
+            crosshairWallJumpColor = new ColorField(config.rootPanel, "Wall jump: Crosshair", "crosshairColor", Color.white);
+            crosshairWallJumpColor.postValueChangeEvent += (Color e) =>
+            {
+                if (WallJumpCrosshairController.Instance != null) WallJumpCrosshairController.Instance.UpdateColor();
+            };
+
+            crosshairWallJumpAlignment = new EnumField<CrosshairAlignment>(config.rootPanel, "Wall jump: Crosshair: Alignment", "crosshairAlignment", CrosshairAlignment.Right);
+            crosshairWallJumpAlignment.postValueChangeEvent += (CrosshairAlignment e) =>
             {
                 if (WallJumpCrosshairController.Instance != null)
                 {
@@ -65,8 +85,50 @@ namespace WallJumpHUD
                 }
             };
 
-            crosshairMatch = new BoolField(config.rootPanel, "MATCH STAMINA COLOR", "crosshairMatch", false);
-            crosshairColor = new ColorField(config.rootPanel, "CROSSHAIR HUD COLOR", "crosshairColor", Color.white);
+            weaponRocketColor = new ColorField(config.rootPanel, "Rocket rides: Weapon HUD", "weaponRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
+            weaponRocketColor.postValueChangeEvent += (Color e) =>
+            {
+                if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.UpdateColor();
+            };
+
+            crosshairRocketColor = new ColorField(config.rootPanel, "Rocket rides: Crosshair", "crosshairRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
+            crosshairRocketColor.postValueChangeEvent += (Color e) =>
+            {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
+            };
+
+            crosshairRocketAlignment = new EnumField<RocketAlignment>(config.rootPanel, "Rocket rides: Crosshair: Alignment", "crosshairRocketAlignment", RocketAlignment.Bottom);
+            crosshairRocketAlignment.postValueChangeEvent += (RocketAlignment e) =>
+            {
+                if (RocketCrosshairController.Instance != null)
+                {
+                    RocketCrosshairController.Instance.SetRocketIndicatorsRotation(e);
+                    if (PowerUpMeter.Instance != null && PowerUpMeter.Instance.latestMaxJuice > 0) RocketCrosshairController.Instance.SetRocketIndicatorsActive(ConfigManager.crosshairRocketShow.value);
+                }
+            };
+            crosshairRocketOffset = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Offset", "crosshairRocketOffset", 40f);
+            crosshairRocketOffset.postValueChangeEvent += (float e) => 
+            { 
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketOffset(e); 
+            };
+
+            crosshairRocketThickness = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Thickness", "crosshairRocketThickness", 4f);
+            crosshairRocketThickness.postValueChangeEvent += (float e) =>
+            {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsThickness(e);
+            };
+
+            crosshairRocketDash = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Dash length", "crosshairRocketDash", 16f);
+            crosshairRocketDash.postValueChangeEvent += (float e) =>
+            {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsDash(e);
+            };
+
+            crosshairRocketGap = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Gap length", "crosshairRocketGap", 1f);
+            crosshairRocketGap.postValueChangeEvent += (float e) =>
+            {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsGap(e);
+            };
         }
     }
 }

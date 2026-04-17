@@ -8,6 +8,7 @@ namespace WallJumpHUD.Patches
         public static void Postfix(WeaponHUD __instance)
         {
             __instance.gameObject.AddComponent<WallJumpWeaponController>();
+            __instance.gameObject.AddComponent<RocketRideWeaponController>();
         }
     }
 }
