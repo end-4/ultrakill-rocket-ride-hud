@@ -1,6 +1,6 @@
 {
     "name": "RocketRideHUD",
-    "version_number": "1.0.2",
+    "version_number": "1.0.0",
     "website_url": "https://github.com/end-4/ultrakill-rocket-ride-hud",
     "description": "HUD/crosshair indicators for (practical) remaining rocket ride count",
     "dependencies": [

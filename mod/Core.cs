@@ -14,7 +14,7 @@ namespace RocketRideHUD
     {
         public const string PluginGUID = "com.github.end-4.rocketRideHud";
         public const string PluginName = "RocketRideHUD";
-        public const string PluginVersion = "1.0.2";
+        public const string PluginVersion = "1.0.0";
 
         public static string workingPath;
         public static string workingDir;

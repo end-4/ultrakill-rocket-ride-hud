@@ -1,3 +1,11 @@
+# RocketRideHud
+
+## 1.0.0
+
+- Added rocket ride indicators
+
+# WallJumpHUD
+
 ## 1.0.2
 
 - Slightly tweaked wall jump icon.
