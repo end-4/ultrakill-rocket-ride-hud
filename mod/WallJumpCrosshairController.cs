@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -66,9 +67,9 @@ namespace RocketRideHUD
             icon3.transform.localScale = Vector3.one;
             crosshair3 = icon3.AddComponent<Image>();
 
-            crosshair1.sprite = Core.bundle.LoadAsset<Sprite>("assets/1.png");
-            crosshair2.sprite = Core.bundle.LoadAsset<Sprite>("assets/2.png");
-            crosshair3.sprite = Core.bundle.LoadAsset<Sprite>("assets/3.png");
+            crosshair1.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/wall_jump_crosshair_1.png"));
+            crosshair2.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/wall_jump_crosshair_2.png"));
+            crosshair3.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/wall_jump_crosshair_3.png"));
 
             SetIconsRotation(ConfigManager.crosshairWallJumpAlignment.value);
             SetIconsActive(ConfigManager.crosshairWallJumpShow.value);

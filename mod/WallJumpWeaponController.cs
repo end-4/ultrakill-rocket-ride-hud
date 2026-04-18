@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System.ComponentModel;
+using System.IO;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace RocketRideHUD
 {
@@ -28,7 +29,7 @@ namespace RocketRideHUD
             iconO.transform.localRotation = new Quaternion();
             iconO.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             icon = iconO.AddComponent<Image>();
-            icon.sprite = Core.bundle.LoadAsset<Sprite>("assets/icon.png");
+            icon.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/wall_jump_weapon_hud.png"));
             icon.color = Core.WeaponColor;
 
             GameObject textO = new GameObject();

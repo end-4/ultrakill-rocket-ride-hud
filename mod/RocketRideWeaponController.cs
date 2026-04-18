@@ -30,15 +30,7 @@ namespace RocketRideHUD
             iconO.transform.localRotation = new Quaternion();
             iconO.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
             icon = iconO.AddComponent<Image>();
-            // try to load an external icon file next to the plugin (full path: <workingDir>/rocket_icon.png)
-            Sprite diskSprite = TryLoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/rocket_ride_weapon_hud.png"));
-            if (diskSprite != null) icon.sprite = diskSprite;
-            else
-            {
-                // fallback to bundle asset if disk file not present
-                try { icon.sprite = Core.bundle.LoadAsset<Sprite>("assets/icon.png"); } catch { icon.sprite = null; }
-            }
-            // initial color use rocket-specific config
+            icon.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/rocket_ride_weapon_hud.png"));
             icon.color = ConfigManager.weaponRocketColor.value;
 
             GameObject textO = new GameObject();
@@ -67,22 +59,8 @@ namespace RocketRideHUD
             //Core.Logger.LogInfo("RocketRideWeaponController OnDestroy");
         }
 
-        private Sprite TryLoadSpriteFromFile(string path)
-        {
-            try
-            {
-                if (!File.Exists(path)) return null;
-                byte[] data = File.ReadAllBytes(path);
-                Texture2D tex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
-                if (!tex.LoadImage(data)) return null;
-                tex.Apply();
-                return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100f);
-            }
-            catch
-            {
-                return null;
-            }
-        }
+
+
 
         public void SetRides(int number)
         {
