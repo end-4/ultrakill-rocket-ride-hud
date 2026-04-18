@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace WallJumpHUD.Patches
+namespace RocketRideHUD.Patches
 {
     [HarmonyPatch(typeof(NewMovement), "Start")]
     public class NewMovement_Start_Patch

@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     public class NewMovementListener : MonoBehaviour
     {

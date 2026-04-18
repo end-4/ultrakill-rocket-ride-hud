@@ -1,4 +1,4 @@
-﻿namespace WallJumpHUD
+﻿namespace RocketRideHUD
 {
     public enum Direction
     {

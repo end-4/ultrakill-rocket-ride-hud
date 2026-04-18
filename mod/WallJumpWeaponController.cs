@@ -4,7 +4,7 @@ using TMPro;
 using HarmonyLib;
 using System.ComponentModel;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     public class WallJumpWeaponController : MonoBehaviour
     {

@@ -22,8 +22,8 @@
   
   <ItemGroup>
 	<Reference Include="Assembly-CSharp">
-	  <SpecificVersion>False</SpecificVersion>
-	  <HintPath>libs\Managed\Assembly-CSharp.dll</HintPath>
+    <SpecificVersion>False</SpecificVersion>
+    <HintPath>libs\Managed\Assembly-CSharp.dll</HintPath>
 	</Reference>
 	<Reference Include="PluginConfigurator">
 		<HintPath>..\..\_Common Libraries_\Others\PluginConfigurator.dll</HintPath>

@@ -4,7 +4,7 @@ using PluginConfig.API.Decorators;
 using System.IO;
 using UnityEngine;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     public class ConfigManager
     {

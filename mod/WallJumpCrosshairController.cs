@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     public class WallJumpCrosshairController : MonoBehaviour
     {

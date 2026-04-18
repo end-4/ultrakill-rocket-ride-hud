@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace WallJumpHUD.Patches
+namespace RocketRideHUD.Patches
 {
     [HarmonyPatch(typeof(PlayerActivatorRelay), "Activate")]
     public class PlayerActivatorRelay_Activate_Patch

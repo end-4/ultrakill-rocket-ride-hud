@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace WallJumpHUD.Patches
+namespace RocketRideHUD.Patches
 {
     [HarmonyPatch(typeof(PowerUpMeter), "Start")]
     public class PowerUpMeter_Start_Patch

@@ -6,20 +6,20 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInDependency("com.eternalUnion.pluginConfigurator")]
     public class Core : BaseUnityPlugin
     {
-        public const string PluginGUID = "trpg.uk.walljumphud";
-        public const string PluginName = "WallJumpHUD";
+        public const string PluginGUID = "com.github.end-4.rocketRideHud";
+        public const string PluginName = "RocketRideHUD";
         public const string PluginVersion = "1.0.2";
 
         public static string workingPath;
         public static string workingDir;
 
-        public static new ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource("WallJumpHUD");
+        public static new ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource("RocketRideHUD");
 
         public static AssetBundle bundle = AssetBundle.LoadFromMemory(Properties.Resources.trpg_walljumphud);
 
@@ -49,7 +49,7 @@ namespace WallJumpHUD
 
         private void Awake()
         {
-            Harmony Harmony = new Harmony("WallJumpHUD");
+            Harmony Harmony = new Harmony("RocketRideHUD");
             Harmony.PatchAll();
 
             workingPath = Assembly.GetExecutingAssembly().Location;

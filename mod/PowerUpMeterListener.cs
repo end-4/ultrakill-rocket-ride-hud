@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     public class PowerUpMeterListener : MonoBehaviour
     {

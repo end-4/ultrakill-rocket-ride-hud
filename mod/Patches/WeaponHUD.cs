@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 
-namespace WallJumpHUD.Patches
+namespace RocketRideHUD.Patches
 {
     [HarmonyPatch(typeof(WeaponHUD), "Awake")]
     public class WeaponHUD_Awake_Patch

@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace WallJumpHUD
+namespace RocketRideHUD
 {
     public class RocketRideWeaponController : MonoBehaviour
     {
