@@ -21,8 +21,7 @@ on the weapon HUD and crosshair
 4. Install the PluginConfigurator mod
 5. Open mods folder: Go to r2modman settings > "Browse profile folder", head to `BepInEx/plugins`
 6. Copy `EternalsTeam-PluginConfigurator/PluginConfigurator/PluginConfigurator.dll` to the folder you created
-7. In Visual Studio Dev Powershell, run `cd mod` and then `msbuild /p:Configuration=Release`
-8. Find the built DLL of the mod in `mod/bin/Release/net472`. Copy it to the mods folder.
+7. From the root folder of the repo run `make-package.ps1`. A zip file will be generated. Import it in r2modman settings.
 
 # Notes
 
