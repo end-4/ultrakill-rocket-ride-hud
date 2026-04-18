@@ -7,7 +7,6 @@ namespace RocketRideHUD
     public class NewMovementListener : MonoBehaviour
     {
         public static NewMovementListener Instance { get; private set; }
-        public const int RocketRidesUntilUseless = 5;
 
         public static event OnWallJumpsChangedDelegate OnWallJumpsChanged;
         public static event OnRocketRideCountChangedDelegate OnRocketRideCountChanged;
@@ -19,7 +18,7 @@ namespace RocketRideHUD
         private Traverse nmT;
 
         private int previousWallJumps;
-        private int previousRocketRideCount = RocketRidesUntilUseless;
+        private int previousRocketRideCount = Core.MaxRocketRides;
 
         private void Awake()
         {
@@ -36,7 +35,7 @@ namespace RocketRideHUD
             {
                 previousRocketRideCount = nmT.Field<int>("rocketRides").Value;
             }
-            catch { previousRocketRideCount = RocketRidesUntilUseless; }
+            catch { previousRocketRideCount = Core.MaxRocketRides; }
 
         }
 
@@ -65,11 +64,7 @@ namespace RocketRideHUD
             {
                 if (currentCount != previousRocketRideCount)
                 {
-                    //Core.Logger.LogInfo($"NewMovementListener detected rocketRides change. current={currentCount} previous={previousRocketRideCount}");
-                    // expose remaining usable rides as 5 - used, clamped to >= 0
-                    int exposed = Mathf.Max(0, RocketRidesUntilUseless - currentCount);
-                    //Core.Logger.LogInfo($"NewMovementListener exposing remaining rides: {exposed}");
-                    if (OnRocketRideCountChanged != null) OnRocketRideCountChanged(exposed);
+                    if (OnRocketRideCountChanged != null) OnRocketRideCountChanged(currentCount);
                     previousRocketRideCount = currentCount;
                 }
 

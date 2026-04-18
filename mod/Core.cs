@@ -29,6 +29,14 @@ namespace RocketRideHUD
             }
         }
 
+        public static int MaxRocketRides
+        {
+            get
+            {
+                return 5;
+            }
+        }
+
         public static Color WeaponColor
         {
             get

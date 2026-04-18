@@ -80,9 +80,10 @@ namespace RocketRideHUD
         }
 
         // show/hide indicators by count
-        public void SetRocketIndicators(int count)
+        public void SetRocketIndicators(int ridesSoFar)
         {
             if (segments == null) return;
+            int count = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             int capped = Mathf.Clamp(count, 0, segments.Length);
             for (int i = 0; i < segments.Length; i++)
             {

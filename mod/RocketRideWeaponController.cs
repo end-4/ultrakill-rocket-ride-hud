@@ -62,10 +62,10 @@ namespace RocketRideHUD
 
 
 
-        public void SetRides(int number)
+        public void SetRides(int ridesSoFar)
         {
             if (text == null) return;
-            rides = number;
+            rides = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             if (rides < 0) rides = 0;
             text.text = rides.ToString();
             //Core.Logger.LogInfo($"RocketRideWeaponController SetRides: {rides}");
