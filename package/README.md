@@ -1,13 +1,9 @@
-# Rocket ride indicator
+# Rocket ride indicators
 
-on the weapon HUD and crosshair
+- Remaining rocket rides until they're ineffective (max 5-ish, see [ULTRAKILL Wiki](https://ultrakill.fandom.com/wiki/Freezeframe_Rocket_Launcher#Chain_Surfing))
+- Angle hint for Freeze-Dash+shoot-Unfreeze ride method
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7c126d39-9bba-4b93-8d2b-23d113db30ec" />
-<br>
-
-- Displays number of rocket rides left before they'll simply drop. You basically get 5 rides; the 6th can still be mounted but you can't really fly upwards. See full details on [ULTRAKILL Wiki](https://ultrakill.fandom.com/wiki/Freezeframe_Rocket_Launcher#Chain_Surfing)
-- Useful for Cyber Grind if you absolutely need to cheese the Mirror Reaper like me
-- Also still has wall jump indicator from the [original mod](https://github.com/TRPG0/UK-WallJumpHUD) because... why not
+<img alt="image" src="https://github.com/user-attachments/assets/6ee07e9b-c1b8-48d5-80c4-b528a13fe619" />
 
 # Notes
 
