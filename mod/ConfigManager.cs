@@ -106,19 +106,19 @@ namespace RocketRideHUD
                     if (PowerUpMeter.Instance != null && PowerUpMeter.Instance.latestMaxJuice > 0) RocketCrosshairController.Instance.SetRocketIndicatorsActive(ConfigManager.crosshairRocketShow.value);
                 }
             };
-            crosshairRocketOffset = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Offset", "crosshairRocketOffset", 40f);
+            crosshairRocketOffset = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Offset", "crosshairRocketOffset", 50f);
             crosshairRocketOffset.postValueChangeEvent += (float e) => 
             { 
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketOffset(e); 
             };
 
-            crosshairRocketThickness = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Thickness", "crosshairRocketThickness", 4f);
+            crosshairRocketThickness = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Thickness", "crosshairRocketThickness", 6f);
             crosshairRocketThickness.postValueChangeEvent += (float e) =>
             {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsThickness(e);
             };
 
-            crosshairRocketDash = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Dash length", "crosshairRocketDash", 16f);
+            crosshairRocketDash = new FloatField(config.rootPanel, "Rocket rides: Crosshair: Dash length", "crosshairRocketDash", 20f);
             crosshairRocketDash.postValueChangeEvent += (float e) =>
             {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsDash(e);
