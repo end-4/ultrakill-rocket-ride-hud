@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
 using System;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ namespace RocketRideHUD {
 
             // Wall jump stuff
             if (previousWallJumps != nm.currentWallJumps) {
-                if (OnWallJumpsChanged != null) OnWallJumpsChanged(3 - nm.currentWallJumps);
+                if (OnWallJumpsChanged != null) OnWallJumpsChanged(Core.MaxWalljumps - nm.currentWallJumps);
                 previousWallJumps = nm.currentWallJumps;
                 //Core.Logger.LogInfo($"Wall jumps changed. {previous}");
             }

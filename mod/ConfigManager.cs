@@ -31,7 +31,7 @@ namespace RocketRideHUD {
 
         private static int h1 = 24;
         private static int h2 = 16;
-        private static int subtitle = 10;
+        private static int subtitle = 12;
         private static int h1Gap = 20;
         private static int h2Gap = 12;
 

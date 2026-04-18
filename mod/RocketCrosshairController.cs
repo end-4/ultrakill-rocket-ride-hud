@@ -7,10 +7,10 @@ namespace RocketRideHUD {
 
         private Image[] segments;
         private Sprite segmentSprite;
-        private int segmentCount = 5;
-        private float dashLength = 12f;
-        private float gapLength = 2f;
-        private float thickness = 4f;
+        private int segmentCount = Core.MaxRocketRides;
+        private float dashLength;
+        private float gapLength;
+        private float thickness;
 
         private Image upperPitchLine;
         private Image lowerPitchLine;
@@ -88,7 +88,7 @@ namespace RocketRideHUD {
             var rect = img.rectTransform;
             rect.pivot = new Vector2(0.5f, 0.5f);
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(30f, 2f); // Wider, thinner lines for pitch
+            rect.sizeDelta = Vector2.zero; // Size is managed in Update()
             return img;
         }
 
