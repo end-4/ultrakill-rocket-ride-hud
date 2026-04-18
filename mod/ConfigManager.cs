@@ -66,7 +66,7 @@ namespace RocketRideHUD {
             };
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "FREEZEFRAME ANGLE HINT", h2);
+            new ConfigHeader(config.rootPanel, "FREEZEFRAME ROCKET RIDE ANGLE HINT", h2);
             crosshairRocketPitchVisibility = new EnumField<PitchShowCondition>(config.rootPanel, "Show when", "rocketPitchVisibility", PitchShowCondition.HoldingFreezeframe);
 
             addGap(config.rootPanel, h2Gap);

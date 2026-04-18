@@ -55,9 +55,6 @@ namespace RocketRideHUD {
             //Core.Logger.LogInfo("RocketRideWeaponController OnDestroy");
         }
 
-
-
-
         public void SetRides(int ridesSoFar) {
             if (text == null) return;
             rides = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
@@ -72,11 +69,6 @@ namespace RocketRideHUD {
 
         public void ResetRides() {
             SetRides(0);
-        }
-
-        private void OnRideEnded() {
-            // leave as-is; change to ResetRides() here if you want per-run behavior
-            //Core.Logger.LogInfo("NewMovementListener reported ride ended");
         }
 
         public void UpdateColor() {
