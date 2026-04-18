@@ -13,6 +13,9 @@ namespace RocketRideHUD
         private float dashLength = 12f;
         private float gapLength = 2f;
         private float thickness = 4f;
+        
+        private Image upperPitchLine;
+        private Image lowerPitchLine;
 
         private void Awake()
         {
@@ -67,16 +70,93 @@ namespace RocketRideHUD
                 segments[i] = img;
             }
 
+            // Initialize Pitch Lines
+            upperPitchLine = CreatePitchLine(container.transform, "UpperPitch");
+            lowerPitchLine = CreatePitchLine(container.transform, "LowerPitch");
+
             SetRocketIndicatorsRotation(ConfigManager.crosshairRocketAlignment.value);
             SetRocketIndicatorsColor();
-            SetRocketIndicatorsActive(ConfigManager.crosshairRocketShow.value);
+            SetRocketIndicatorsActive(ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden);
 
+            nm = NewMovement.Instance;
             NewMovementListener.OnRocketRideCountChanged += SetRocketIndicators;
+        }
+
+        private NewMovement nm;
+
+        private Image CreatePitchLine(Transform parent, string name)
+        {
+            GameObject go = new GameObject(name);
+            go.layer = 5;
+            go.transform.SetParent(parent);
+            var img = go.AddComponent<Image>();
+            img.sprite = segmentSprite;
+            var rect = img.rectTransform;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(30f, 2f); // Wider, thinner lines for pitch
+            return img;
         }
 
         private void OnDestroy()
         {
             NewMovementListener.OnRocketRideCountChanged -= SetRocketIndicators;
+        }
+
+        private void Update()
+        {
+            bool visibilityCheck = false;
+            switch (ConfigManager.crosshairRocketPitchVisibility.value)
+            {
+                case PitchShowCondition.Never:
+                    visibilityCheck = false;
+                    break;
+                case PitchShowCondition.Always:
+                    visibilityCheck = true;
+                    break;
+                case PitchShowCondition.HoldingRocketLauncher:
+                    if (GunControl.Instance != null && GunControl.Instance.currentWeapon != null)
+                        visibilityCheck = GunControl.Instance.currentWeapon.GetComponent<RocketLauncher>() != null;
+                    break;
+                case PitchShowCondition.HoldingFreezeframe:
+                    if (GunControl.Instance != null && GunControl.Instance.currentWeapon != null)
+                    {
+                        RocketLauncher rl = GunControl.Instance.currentWeapon.GetComponent<RocketLauncher>();
+                        visibilityCheck = rl != null && rl.variation == 0;
+                    }
+                    break;
+            }
+
+            if (nm == null || upperPitchLine == null || !visibilityCheck)
+            {
+                if (upperPitchLine != null) upperPitchLine.gameObject.SetActive(false);
+                if (lowerPitchLine != null) lowerPitchLine.gameObject.SetActive(false);
+                return;
+            }
+
+            upperPitchLine.gameObject.SetActive(true);
+            lowerPitchLine.gameObject.SetActive(true);
+
+            float currentPitch = nm.cc.cam.transform.localEulerAngles.x;
+            if (currentPitch > 180) currentPitch -= 360; // Normalize to -180 to 180
+            // Debug current pitch
+            // Core.Logger.LogInfo($"Current Pitch: {currentPitch}");
+
+            float minPitch = ConfigManager.crosshairRocketPitchMin.value;
+            float maxPitch = ConfigManager.crosshairRocketPitchMax.value;
+            float sens = ConfigManager.crosshairRocketPitchSensitivity.value;
+            float invScale = 1f / Mathf.Max(0.0001f, transform.lossyScale.x);
+
+            // Calculate position relative to crosshair
+            float offsetMin = (currentPitch - minPitch) * sens * invScale;
+            float offsetMax = (currentPitch - maxPitch) * sens * invScale;
+
+            upperPitchLine.rectTransform.anchoredPosition = new Vector2(0, offsetMin);
+            lowerPitchLine.rectTransform.anchoredPosition = new Vector2(0, offsetMax);
+            
+            upperPitchLine.color = lowerPitchLine.color = ConfigManager.crosshairRocketPitchColor.value;
+            Vector2 size = new Vector2(ConfigManager.crosshairRocketPitchWidth.value * invScale, ConfigManager.crosshairRocketPitchThickness.value * invScale);
+            upperPitchLine.rectTransform.sizeDelta = lowerPitchLine.rectTransform.sizeDelta = size;
         }
 
         // show/hide indicators by count
@@ -88,7 +168,7 @@ namespace RocketRideHUD
             for (int i = 0; i < segments.Length; i++)
             {
                 if (segments[i] == null) continue;
-                segments[i].gameObject.SetActive(i < capped && ConfigManager.crosshairRocketShow.value && ConfigManager.crosshairWallJumpShow.value);
+                segments[i].gameObject.SetActive(i < capped && ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden);
             }
         }
 

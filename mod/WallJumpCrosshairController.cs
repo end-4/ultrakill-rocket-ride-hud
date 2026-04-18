@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+﻿﻿using HarmonyLib;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -72,7 +72,7 @@ namespace RocketRideHUD
             crosshair3.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/wall_jump_crosshair_3.png"));
 
             SetIconsRotation(ConfigManager.crosshairWallJumpAlignment.value);
-            SetIconsActive(ConfigManager.crosshairWallJumpShow.value);
+            SetIconsActive(ConfigManager.crosshairWallJumpAlignment.value != CrosshairAlignment.Hidden);
             UpdateColor();
             SetWallJumps(Core.MaxWalljumps);
             NewMovementListener.OnWallJumpsChanged += SetWallJumps;
@@ -89,7 +89,7 @@ namespace RocketRideHUD
 
         private void Update()
         {
-            if (ConfigManager.crosshairWallJumpShow.value)
+            if (ConfigManager.crosshairWallJumpAlignment.value != CrosshairAlignment.Hidden)
             {
                 if (nmT.Field<float>("fallTime").Value > 0.25) time = maxTime;
                 else if (time > minTime) time -= Time.deltaTime;
@@ -205,24 +205,26 @@ namespace RocketRideHUD
             if (jumps > Core.MaxWalljumps) jumps = Core.MaxWalljumps;
             if (jumps < 0) jumps = 0;
 
+            bool show = ConfigManager.crosshairWallJumpAlignment.value != CrosshairAlignment.Hidden;
+
             switch (jumps)
             {
                 case 3:
-                    crosshair1.gameObject.SetActive(true);
-                    crosshair2.gameObject.SetActive(true);
-                    crosshair3.gameObject.SetActive(true);
+                    crosshair1.gameObject.SetActive(show);
+                    crosshair2.gameObject.SetActive(show);
+                    crosshair3.gameObject.SetActive(show);
                     break;
                 case 2:
                     if (Direction == Direction.Reverse)
                     {
                         crosshair1.gameObject.SetActive(false);
-                        crosshair2.gameObject.SetActive(true);
-                        crosshair3.gameObject.SetActive(true);
+                        crosshair2.gameObject.SetActive(show);
+                        crosshair3.gameObject.SetActive(show);
                     }
                     else
                     {
-                        crosshair1.gameObject.SetActive(true);
-                        crosshair2.gameObject.SetActive(true);
+                        crosshair1.gameObject.SetActive(show);
+                        crosshair2.gameObject.SetActive(show);
                         crosshair3.gameObject.SetActive(false);
                     }
                     break;
@@ -231,11 +233,11 @@ namespace RocketRideHUD
                     {
                         crosshair1.gameObject.SetActive(false);
                         crosshair2.gameObject.SetActive(false);
-                        crosshair3.gameObject.SetActive(true);
+                        crosshair3.gameObject.SetActive(show);
                     }
                     else
                     {
-                        crosshair1.gameObject.SetActive(true);
+                        crosshair1.gameObject.SetActive(show);
                         crosshair2.gameObject.SetActive(false);
                         crosshair3.gameObject.SetActive(false);
                     }
