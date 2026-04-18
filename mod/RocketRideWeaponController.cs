@@ -57,16 +57,12 @@ namespace RocketRideHUD
             SetStuffActive(ConfigManager.weaponRocketShow.value);
 
             // subscribe to listener events
-            NewMovementListener.OnRocketRideStarted += Increment;
-            NewMovementListener.OnRocketRideEnded += OnRideEnded;
             NewMovementListener.OnRocketRideCountChanged += SetRides;
             //Core.Logger.LogInfo("RocketRideWeaponController subscribed to NewMovementListener events");
         }
 
         private void OnDestroy()
         {
-            NewMovementListener.OnRocketRideStarted -= Increment;
-            NewMovementListener.OnRocketRideEnded -= OnRideEnded;
             NewMovementListener.OnRocketRideCountChanged -= SetRides;
             //Core.Logger.LogInfo("RocketRideWeaponController OnDestroy");
         }

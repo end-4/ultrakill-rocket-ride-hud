@@ -10,20 +10,15 @@ namespace RocketRideHUD
         public const int RocketRidesUntilUseless = 5;
 
         public static event OnWallJumpsChangedDelegate OnWallJumpsChanged;
-        public static event OnRocketRideStartedDelegate OnRocketRideStarted;
-        public static event OnRocketRideEndedDelegate OnRocketRideEnded;
         public static event OnRocketRideCountChangedDelegate OnRocketRideCountChanged;
 
         public delegate void OnWallJumpsChangedDelegate(int number);
-        public delegate void OnRocketRideStartedDelegate();
-        public delegate void OnRocketRideEndedDelegate();
         public delegate void OnRocketRideCountChangedDelegate(int count);
 
         private NewMovement nm;
         private Traverse nmT;
 
         private int previousWallJumps;
-        private bool previousRocketRideYes = false;
         private int previousRocketRideCount = RocketRidesUntilUseless;
 
         private void Awake()
@@ -42,8 +37,6 @@ namespace RocketRideHUD
                 previousRocketRideCount = nmT.Field<int>("rocketRides").Value;
             }
             catch { previousRocketRideCount = RocketRidesUntilUseless; }
-            // Try to initialize previousRocketRideYes from common boolean field names
-            try { previousRocketRideYes = nmT.Field<bool>("isRidingRocket").Value; } catch { try { previousRocketRideYes = nmT.Field<bool>("isRiding").Value; } catch { previousRocketRideYes = false; } }
 
         }
 
@@ -81,27 +74,6 @@ namespace RocketRideHUD
                 }
 
                 return;
-            }
-
-            // If no integer counter found, try to detect a boolean "is riding" field
-            bool currentIsRiding = false;
-            try
-            {
-                // try common candidate names; replace/add names as you find them
-                currentIsRiding = nmT.Field<bool>("isRidingRocket").Value;
-            }
-            catch
-            {
-                try { currentIsRiding = nmT.Field<bool>("isRiding").Value; } catch { }
-                try { if (!currentIsRiding) currentIsRiding = nmT.Field<bool>("ridingRocket").Value; } catch { }
-            }
-
-            if (currentIsRiding != previousRocketRideYes)
-            {
-                //Core.Logger.LogInfo($"NewMovementListener detected isRiding change. current={currentIsRiding} previous={previousRocketRideYes}");
-                if (currentIsRiding && OnRocketRideStarted != null) OnRocketRideStarted();
-                if (!currentIsRiding && OnRocketRideEnded != null) OnRocketRideEnded();
-                previousRocketRideYes = currentIsRiding;
             }
         }
     }
