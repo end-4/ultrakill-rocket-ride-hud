@@ -123,25 +123,26 @@ namespace RocketRideHUD {
                 return;
             }
 
-            upperPitchLine.gameObject.SetActive(true);
-            lowerPitchLine.gameObject.SetActive(true);
-
             float currentPitch = nm.cc.cam.transform.localEulerAngles.x;
             if (currentPitch > 180) currentPitch -= 360; // Normalize to -180 to 180
-            // Debug current pitch
-            // Core.Logger.LogInfo($"Current Pitch: {currentPitch}");
 
             float minPitch = ConfigManager.crosshairRocketPitchMin.value;
             float maxPitch = ConfigManager.crosshairRocketPitchMax.value;
             float sens = ConfigManager.crosshairRocketPitchSensitivity.value;
             float invScale = 1f / Mathf.Max(0.0001f, transform.lossyScale.x);
 
-            // Calculate position relative to crosshair
-            float offsetMin = (currentPitch - minPitch) * sens * invScale;
-            float offsetMax = (currentPitch - maxPitch) * sens * invScale;
+            // Calculate position relative to crosshair using perspective projection (tangent)
+            // focalLength is derived so that for small angles, 1 degree = sens pixels.
+            float focalLength = sens * (180f / Mathf.PI);
+            float diffMin = (currentPitch - minPitch) * Mathf.Deg2Rad;
+            float diffMax = (currentPitch - maxPitch) * Mathf.Deg2Rad;
 
-            upperPitchLine.rectTransform.anchoredPosition = new Vector2(0, offsetMin);
-            lowerPitchLine.rectTransform.anchoredPosition = new Vector2(0, offsetMax);
+            // Hide lines if they are too far from center (perspective limit)
+            upperPitchLine.gameObject.SetActive(Mathf.Abs(diffMin) < 1.5f); // ~86 degrees
+            lowerPitchLine.gameObject.SetActive(Mathf.Abs(diffMax) < 1.5f);
+
+            upperPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMin) * focalLength * invScale);
+            lowerPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMax) * focalLength * invScale);
 
             upperPitchLine.color = lowerPitchLine.color = ConfigManager.crosshairRocketPitchColor.value;
             Vector2 size = new Vector2(ConfigManager.crosshairRocketPitchWidth.value * invScale, ConfigManager.crosshairRocketPitchThickness.value * invScale);
