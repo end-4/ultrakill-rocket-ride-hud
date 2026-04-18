@@ -1,12 +1,9 @@
 ﻿using HarmonyLib;
 
-namespace RocketRideHUD.Patches
-{
+namespace RocketRideHUD.Patches {
     [HarmonyPatch(typeof(NewMovement), "Start")]
-    public class NewMovement_Start_Patch
-    {
-        public static void Postfix(NewMovement __instance)
-        {
+    public class NewMovement_Start_Patch {
+        public static void Postfix(NewMovement __instance) {
             __instance.gameObject.AddComponent<NewMovementListener>();
         }
     }

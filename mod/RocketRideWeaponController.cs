@@ -3,10 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace RocketRideHUD
-{
-    public class RocketRideWeaponController : MonoBehaviour
-    {
+namespace RocketRideHUD {
+    public class RocketRideWeaponController : MonoBehaviour {
         public static RocketRideWeaponController Instance { get; private set; }
 
         public Image icon;
@@ -14,8 +12,7 @@ namespace RocketRideHUD
 
         private int rides;
 
-        private void Start()
-        {
+        private void Start() {
             //Core.Logger.LogInfo("RocketRideWeaponController Start");
             if (Instance != null && Instance != this) return;
             Instance = this;
@@ -53,8 +50,7 @@ namespace RocketRideHUD
             //Core.Logger.LogInfo("RocketRideWeaponController subscribed to NewMovementListener events");
         }
 
-        private void OnDestroy()
-        {
+        private void OnDestroy() {
             NewMovementListener.OnRocketRideCountChanged -= SetRides;
             //Core.Logger.LogInfo("RocketRideWeaponController OnDestroy");
         }
@@ -62,8 +58,7 @@ namespace RocketRideHUD
 
 
 
-        public void SetRides(int ridesSoFar)
-        {
+        public void SetRides(int ridesSoFar) {
             if (text == null) return;
             rides = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             if (rides < 0) rides = 0;
@@ -71,24 +66,20 @@ namespace RocketRideHUD
             //Core.Logger.LogInfo($"RocketRideWeaponController SetRides: {rides}");
         }
 
-        public void Increment()
-        {
+        public void Increment() {
             SetRides(rides + 1);
         }
 
-        public void ResetRides()
-        {
+        public void ResetRides() {
             SetRides(0);
         }
 
-        private void OnRideEnded()
-        {
+        private void OnRideEnded() {
             // leave as-is; change to ResetRides() here if you want per-run behavior
             //Core.Logger.LogInfo("NewMovementListener reported ride ended");
         }
 
-        public void UpdateColor()
-        {
+        public void UpdateColor() {
             if (icon == null || text == null) return;
 
             Color c = ConfigManager.weaponRocketColor.value;
@@ -96,8 +87,7 @@ namespace RocketRideHUD
             text.color = c;
         }
 
-        public void SetStuffActive(bool active)
-        {
+        public void SetStuffActive(bool active) {
             if (icon == null || text == null) return;
 
             icon.gameObject.SetActive(active);

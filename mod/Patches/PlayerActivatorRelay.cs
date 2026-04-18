@@ -1,12 +1,9 @@
 ﻿using HarmonyLib;
 
-namespace RocketRideHUD.Patches
-{
+namespace RocketRideHUD.Patches {
     [HarmonyPatch(typeof(PlayerActivatorRelay), "Activate")]
-    public class PlayerActivatorRelay_Activate_Patch
-    {
-        public static void Postfix()
-        {
+    public class PlayerActivatorRelay_Activate_Patch {
+        public static void Postfix() {
             StatsManager.Instance.crosshair?.GetOrAddComponent<WallJumpCrosshairController>();
             StatsManager.Instance.crosshair?.GetOrAddComponent<RocketCrosshairController>();
         }

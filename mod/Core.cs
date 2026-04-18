@@ -6,12 +6,10 @@ using System.IO;
 using System.Reflection;
 using UnityEngine;
 
-namespace RocketRideHUD
-{
+namespace RocketRideHUD {
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
     [BepInDependency("com.eternalUnion.pluginConfigurator")]
-    public class Core : BaseUnityPlugin
-    {
+    public class Core : BaseUnityPlugin {
         public const string PluginGUID = "com.github.end-4.rocketRideHud";
         public const string PluginName = "RocketRideHUD";
         public const string PluginVersion = "1.0.0";
@@ -21,40 +19,31 @@ namespace RocketRideHUD
 
         public static new ManualLogSource Logger = BepInEx.Logging.Logger.CreateLogSource("RocketRideHUD");
 
-        public static int MaxWalljumps
-        {
-            get
-            {
+        public static int MaxWalljumps {
+            get {
                 return 3;
             }
         }
 
-        public static int MaxRocketRides
-        {
-            get
-            {
+        public static int MaxRocketRides {
+            get {
                 return 5;
             }
         }
 
-        public static Color WeaponColor
-        {
-            get
-            {
+        public static Color WeaponColor {
+            get {
                 return ConfigManager.weaponWallJumpColor.value;
             }
         }
 
-        public static Color CrosshairColor
-        {
-            get
-            {
+        public static Color CrosshairColor {
+            get {
                 return ConfigManager.crosshairWallJumpColor.value;
             }
         }
 
-        private void Awake()
-        {
+        private void Awake() {
             Harmony Harmony = new Harmony("RocketRideHUD");
             Harmony.PatchAll();
 

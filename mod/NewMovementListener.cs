@@ -2,10 +2,8 @@
 using System;
 using UnityEngine;
 
-namespace RocketRideHUD
-{
-    public class NewMovementListener : MonoBehaviour
-    {
+namespace RocketRideHUD {
+    public class NewMovementListener : MonoBehaviour {
         public static NewMovementListener Instance { get; private set; }
 
         public static event OnWallJumpsChangedDelegate OnWallJumpsChanged;
@@ -20,8 +18,7 @@ namespace RocketRideHUD
         private int previousWallJumps;
         private int previousRocketRideCount = Core.MaxRocketRides;
 
-        private void Awake()
-        {
+        private void Awake() {
             if (Instance != null && Instance != this) return;
             Instance = this;
 
@@ -31,21 +28,17 @@ namespace RocketRideHUD
             previousWallJumps = nm.currentWallJumps;
 
             // Try to initialize previousRocketRideCount from the game's field if present
-            try
-            {
+            try {
                 previousRocketRideCount = nmT.Field<int>("rocketRides").Value;
-            }
-            catch { previousRocketRideCount = Core.MaxRocketRides; }
+            } catch { previousRocketRideCount = Core.MaxRocketRides; }
 
         }
 
-        private void Update()
-        {
+        private void Update() {
             if (nm == null) return;
 
             // Wall jump stuff
-            if (previousWallJumps != nm.currentWallJumps)
-            {
+            if (previousWallJumps != nm.currentWallJumps) {
                 if (OnWallJumpsChanged != null) OnWallJumpsChanged(3 - nm.currentWallJumps);
                 previousWallJumps = nm.currentWallJumps;
                 //Core.Logger.LogInfo($"Wall jumps changed. {previous}");
@@ -54,16 +47,12 @@ namespace RocketRideHUD
             // Rocket ride stuff
             // Try to detect an integer ride counter on NewMovement (field found via decompiler: "rocketRides")
             int currentCount = -1;
-            try
-            {
+            try {
                 currentCount = nmT.Field<int>("rocketRides").Value;
-            }
-            catch { }
+            } catch { }
 
-            if (currentCount >= 0)
-            {
-                if (currentCount != previousRocketRideCount)
-                {
+            if (currentCount >= 0) {
+                if (currentCount != previousRocketRideCount) {
                     if (OnRocketRideCountChanged != null) OnRocketRideCountChanged(currentCount);
                     previousRocketRideCount = currentCount;
                 }

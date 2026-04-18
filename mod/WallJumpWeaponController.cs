@@ -5,17 +5,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RocketRideHUD
-{
-    public class WallJumpWeaponController : MonoBehaviour
-    {
+namespace RocketRideHUD {
+    public class WallJumpWeaponController : MonoBehaviour {
         public static WallJumpWeaponController Instance { get; private set; }
 
         public Image icon;
         public TextMeshProUGUI text;
 
-        private void Start()
-        {
+        private void Start() {
             if (Instance != null && Instance != this) return;
             Instance = this;
 
@@ -51,35 +48,30 @@ namespace RocketRideHUD
             PowerUpMeterListener.OnPowerUpEnded += OnPowerUpChange;
         }
 
-        private void OnDestroy()
-        {
+        private void OnDestroy() {
             NewMovementListener.OnWallJumpsChanged -= SetWallJumps;
             PowerUpMeterListener.OnPowerUpStarted -= OnPowerUpChange;
             PowerUpMeterListener.OnPowerUpEnded -= OnPowerUpChange;
         }
 
-        public void SetWallJumps(int number)
-        {
+        public void SetWallJumps(int number) {
             if (text == null) return;
             if (number > Core.MaxWalljumps) number = Core.MaxWalljumps;
             text.text = number.ToString();
         }
 
-        public void OnPowerUpChange()
-        {
+        public void OnPowerUpChange() {
             SetWallJumps(NewMovement.Instance.gc.onGround ? Core.MaxWalljumps : NewMovement.Instance.currentWallJumps);
         }
 
-        public void UpdateColor()
-        {
+        public void UpdateColor() {
             if (icon == null || text == null) return;
 
             icon.color = Core.WeaponColor;
             text.color = Core.WeaponColor;
         }
 
-        public void SetStuffActive(bool active)
-        {
+        public void SetStuffActive(bool active) {
             if (icon == null || text == null) return;
 
             icon.gameObject.SetActive(active);

@@ -1,13 +1,10 @@
-﻿﻿namespace RocketRideHUD
-{
-    public enum Direction
-    {
+﻿namespace RocketRideHUD {
+    public enum Direction {
         Normal,
         Reverse
     }
 
-    public enum CrosshairAlignment
-    {
+    public enum CrosshairAlignment {
         Hidden,
         Top,
         Left,
@@ -15,15 +12,13 @@
         Bottom
     }
 
-    public enum RocketAlignment
-    {
+    public enum RocketAlignment {
         Hidden,
         Top,
         Bottom
     }
 
-    public enum PitchShowCondition
-    {
+    public enum PitchShowCondition {
         Never,
         Always,
         HoldingRocketLauncher,
