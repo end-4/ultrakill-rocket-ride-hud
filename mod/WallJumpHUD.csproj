@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <AssemblyName>WallJumpHUD</AssemblyName>
+    <AssemblyName>RocketRideHUD</AssemblyName>
     <Description>My first plugin</Description>
     <Version>1.0.2</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

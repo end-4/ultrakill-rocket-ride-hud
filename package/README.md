@@ -1,5 +1,9 @@
-# WallJumpHUD
+# Rocket ride HUD
 
-![Screenshot 2024-01-17 231942](https://github.com/TRPG0/UK-WallJumpHUD/assets/80716066/84b560a2-8b1a-4ae4-8166-b9ef2d2766c5)
+- Displays number of rocket rides left before they'll simply drop. You get 5 rides, and the 6th rocket can still be mounted but will only fly downwards
+- Useful for Cyber Grind if you absolutely need to cheese the Mirror Reaper like me
 
-Customizable HUD and crosshair indicators for wall jumps. Both indicators can be hidden, and colors can be changed.
+# Notes
+
+- Thank you TRPG0 for the original mod [WallJumpHUD](https://github.com/TRPG0/UK-WallJumpHUD)
+

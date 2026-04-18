@@ -29,7 +29,7 @@ namespace WallJumpHUD
         public static void Init()
         {
             if (config != null) return;
-            config = PluginConfigurator.Create("WallJumpHUD", Core.PluginGUID);
+            config = PluginConfigurator.Create("Rocket Ride HUD", Core.PluginGUID);
 
             string iconPath = Path.Combine(Core.workingDir, "icon.png");
             if (File.Exists(iconPath)) config.SetIconWithURL(iconPath);
