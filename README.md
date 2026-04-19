@@ -6,7 +6,7 @@
 - Also still has wall jump indicator from the [original mod](https://github.com/TRPG0/UK-WallJumpHUD) because... why not
 - The colors can be customized
 
-<img alt="image" src="https://github.com/user-attachments/assets/6ee07e9b-c1b8-48d5-80c4-b528a13fe619" />
+<img alt="preview" src="https://github.com/user-attachments/assets/b1d19b04-bc82-4598-891e-1783461529f8" />
 
 <br>
 
