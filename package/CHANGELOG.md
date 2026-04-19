@@ -3,6 +3,7 @@
 ## 1.0.2
 
 - Fixed wrong initial rocket ride count on weapon HUD
+- Added rocket fuel indicator
 
 ## 1.0.1
 

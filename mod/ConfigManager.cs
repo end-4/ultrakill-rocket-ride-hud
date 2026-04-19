@@ -3,6 +3,7 @@ using PluginConfig.API.Fields;
 using PluginConfig.API.Decorators;
 using System.IO;
 using UnityEngine;
+using TMPro;
 
 namespace RocketRideHUD {
     public class ConfigManager {
@@ -16,6 +17,11 @@ namespace RocketRideHUD {
         public static BoolField weaponRocketShow;
         public static ColorField weaponRocketColor;
         public static ColorField crosshairRocketColor;
+        public static ColorField crosshairRocketUsedColor;
+        public static FloatField crosshairRocketUsedOpacity;
+        public static BoolField crosshairRocketFuelShow;
+        public static ColorField crosshairRocketFuelColor;
+        public static FloatField crosshairRocketFuelOverstay;
         public static EnumField<RocketAlignment> crosshairRocketAlignment;
         public static FloatField crosshairRocketOffset;
         public static FloatField crosshairRocketThickness;
@@ -39,20 +45,13 @@ namespace RocketRideHUD {
             return new ConfigHeader(panel, "", size);
         }
 
-        public static void Init() {
-            if (config != null) return;
-            config = PluginConfigurator.Create("Rocket Ride HUD", Core.PluginGUID);
-
-            string iconPath = Path.Combine(Core.workingDir, "icon.png");
-            if (File.Exists(iconPath)) config.SetIconWithURL(iconPath);
-
-            // Display ////////////////////////////////////////////////////////////////////////////////////////
+        private static void addDisplayOptions() {
             addGap(config.rootPanel, h1Gap); // Hack to avoid overlap with PluginConfigurator profile bar
             new ConfigHeader(config.rootPanel, "-- DISPLAY --", h1);
             new ConfigHeader(config.rootPanel, "Weapon HUD indicators only available on standard style", subtitle);
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "ROCKET RIDES", h2);
+            new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
             weaponRocketShow = new BoolField(config.rootPanel, "Weapon HUD number", "weaponRocketShow", true);
             weaponRocketShow.postValueChangeEvent += (bool e) => {
                 if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.SetStuffActive(e);
@@ -60,17 +59,18 @@ namespace RocketRideHUD {
             crosshairRocketAlignment = new EnumField<RocketAlignment>(config.rootPanel, "Crosshair indicator", "crosshairRocketAlignment", RocketAlignment.Bottom);
             crosshairRocketAlignment.postValueChangeEvent += (RocketAlignment e) => {
                 if (RocketCrosshairController.Instance != null) {
-                    RocketCrosshairController.Instance.SetRocketIndicatorsRotation(e);
+                    RocketCrosshairController.Instance.UpdateRideIndicators(e);
                     RocketCrosshairController.Instance.SetRocketIndicatorsActive(e != RocketAlignment.Hidden);
                 }
             };
+            crosshairRocketFuelShow = new BoolField(config.rootPanel, "Show fuel bar", "crosshairRocketFuelShow", true);
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "FREEZEFRAME ROCKET RIDE ANGLE HINT", h2);
+            new ConfigHeader(config.rootPanel, "// Freezeframe rocket ride angle hint", h2, TextAlignmentOptions.Left);
             crosshairRocketPitchVisibility = new EnumField<PitchShowCondition>(config.rootPanel, "Show when", "rocketPitchVisibility", PitchShowCondition.HoldingFreezeframe);
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "WALL JUMPS", h2);
+            new ConfigHeader(config.rootPanel, "// Wall jumps", h2, TextAlignmentOptions.Left);
             weaponWallJumpShow = new BoolField(config.rootPanel, "Weapon HUD number", "weaponShow", true);
             weaponWallJumpShow.postValueChangeEvent += (bool e) => {
                 if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.SetStuffActive(e);
@@ -83,13 +83,14 @@ namespace RocketRideHUD {
                     WallJumpCrosshairController.Instance.SetIconsActive(e != CrosshairAlignment.Hidden);
                 }
             };
+        }
 
-            // Customization //////////////////////////////////////////////////////////////////////////////////
+        private static void addCustomizationOptions() {
             addGap(config.rootPanel, h1Gap);
             new ConfigHeader(config.rootPanel, "-- CUSTOMIZATION --");
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "ROCKET RIDES", h2);
+            new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
             weaponRocketColor = new ColorField(config.rootPanel, "Weapon HUD indicator", "weaponRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
             weaponRocketColor.postValueChangeEvent += (Color e) => {
                 if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.UpdateColor();
@@ -98,34 +99,40 @@ namespace RocketRideHUD {
             crosshairRocketColor.postValueChangeEvent += (Color e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
             };
-            crosshairRocketOffset = new FloatField(config.rootPanel, "Crosshair: Offset", "crosshairRocketOffset", 50f);
+            crosshairRocketUsedColor = new ColorField(config.rootPanel, "Crosshair indicator (Used)", "crosshairRocketUsedColor", new Color(1f, 1f, 1f));
+            crosshairRocketUsedColor.postValueChangeEvent += (Color e) => {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
+            };
+            crosshairRocketUsedOpacity = new FloatField(config.rootPanel, "Crosshair indicator opacity (Used)", "crosshairRocketUsedOpacity", 0.4f);
+            crosshairRocketUsedOpacity.postValueChangeEvent += (float e) => {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
+            };
+            crosshairRocketFuelColor = new ColorField(config.rootPanel, "Fuel bar color", "crosshairRocketFuelColor", new Color(1f, 128f / 255f, 58f / 255f));
+            crosshairRocketOffset = new FloatField(config.rootPanel, "Crosshair: Offset", "crosshairRocketOffset", 40f);
             crosshairRocketOffset.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketOffset(e);
             };
-            crosshairRocketThickness = new FloatField(config.rootPanel, "Crosshair: Thickness", "crosshairRocketThickness", 6f);
+            crosshairRocketThickness = new FloatField(config.rootPanel, "Crosshair: Thickness", "crosshairRocketThickness", 4f);
             crosshairRocketThickness.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsThickness(e);
             };
-            crosshairRocketDash = new FloatField(config.rootPanel, "Crosshair: Dash length", "crosshairRocketDash", 20f);
+            crosshairRocketDash = new FloatField(config.rootPanel, "Crosshair: Dash length", "crosshairRocketDash", 18f);
             crosshairRocketDash.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsDash(e);
             };
-            crosshairRocketGap = new FloatField(config.rootPanel, "Crosshair: Gap length", "crosshairRocketGap", 1f);
+            crosshairRocketGap = new FloatField(config.rootPanel, "Crosshair: Gap length", "crosshairRocketGap", -3f);
             crosshairRocketGap.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsGap(e);
             };
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "FREEZEFRAME ANGLE HINT", h2);
-            crosshairRocketPitchMin = new FloatField(config.rootPanel, "Minimum pitch (degrees)", "rocketPitchMin", 3.8f);
-            crosshairRocketPitchMax = new FloatField(config.rootPanel, "Maximum pitch (degrees)", "rocketPitchMax", 33.8f);
-            crosshairRocketPitchSensitivity = new FloatField(config.rootPanel, "Visual sensitivity (px/degree)", "rocketPitchSensitivity", 7f);
+            new ConfigHeader(config.rootPanel, "// Freezeframe rocket ride angle hint", h2, TextAlignmentOptions.Left);
             crosshairRocketPitchColor = new ColorField(config.rootPanel, "Color", "rocketPitchColor", new Color(64f / 255f, 232f / 255f, 1f));
-            crosshairRocketPitchWidth = new FloatField(config.rootPanel, "Line length", "rocketPitchWidth", 200f);
-            crosshairRocketPitchThickness = new FloatField(config.rootPanel, "Line thickness", "rocketPitchThickness", 3f);
+            crosshairRocketPitchWidth = new FloatField(config.rootPanel, "Line length", "rocketPitchWidth", 150f);
+            crosshairRocketPitchThickness = new FloatField(config.rootPanel, "Line thickness", "rocketPitchThickness", 2f);
 
             addGap(config.rootPanel, h2Gap);
-            new ConfigHeader(config.rootPanel, "WALL JUMPS", h2);
+            new ConfigHeader(config.rootPanel, "// Wall jumps", h2, TextAlignmentOptions.Left);
             weaponWallJumpColor = new ColorField(config.rootPanel, "Weapon HUD", "weaponColor", Color.white);
             weaponWallJumpColor.postValueChangeEvent += (Color e) => {
                 if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.UpdateColor();
@@ -134,7 +141,33 @@ namespace RocketRideHUD {
             crosshairWallJumpColor.postValueChangeEvent += (Color e) => {
                 if (WallJumpCrosshairController.Instance != null) WallJumpCrosshairController.Instance.UpdateColor();
             };
+        }
 
+        private static void addAdvancedOptions() {
+            addGap(config.rootPanel, h1Gap);
+            new ConfigHeader(config.rootPanel, "-- ADVANCED --");
+
+            addGap(config.rootPanel, h2Gap);
+            new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
+            crosshairRocketFuelOverstay = new FloatField(config.rootPanel, "Fuel indicator: Overstay amount", "crosshairRocketFuelOverstay", 0.1f);
+
+            addGap(config.rootPanel, h2Gap);
+            new ConfigHeader(config.rootPanel, "// Freezeframe rocket ride angle hint", h2, TextAlignmentOptions.Left);
+            crosshairRocketPitchMin = new FloatField(config.rootPanel, "Minimum pitch (degrees)", "rocketPitchMin", 3.8f);
+            crosshairRocketPitchMax = new FloatField(config.rootPanel, "Maximum pitch (degrees)", "rocketPitchMax", 33.8f);
+            crosshairRocketPitchSensitivity = new FloatField(config.rootPanel, "Visual sensitivity (px/degree)", "rocketPitchSensitivity", 7f);
+        }
+
+        public static void Init() {
+            if (config != null) return;
+            config = PluginConfigurator.Create("Rocket Ride HUD", Core.PluginGUID);
+
+            string iconPath = Path.Combine(Core.workingDir, "icon.png");
+            if (File.Exists(iconPath)) config.SetIconWithURL(iconPath);
+
+            addDisplayOptions();
+            addCustomizationOptions();
+            addAdvancedOptions();
         }
     }
 }

@@ -8,12 +8,13 @@ namespace RocketRideHUD {
 
         public static event OnWallJumpsChangedDelegate OnWallJumpsChanged;
         public static event OnRocketRideCountChangedDelegate OnRocketRideCountChanged;
+        public static event OnRocketFuelChangedDelegate OnRocketFuelChanged;
 
         public delegate void OnWallJumpsChangedDelegate(int number);
         public delegate void OnRocketRideCountChangedDelegate(int count);
+        public delegate void OnRocketFuelChangedDelegate(float fuelAmount);
 
         private NewMovement nm;
-        private Traverse nmT;
 
         private int previousWallJumps;
         private int previousRocketRideCount = Core.MaxRocketRides;
@@ -23,41 +24,41 @@ namespace RocketRideHUD {
             Instance = this;
 
             nm = NewMovement.Instance;
-            nmT = Traverse.Create(nm);
-
             previousWallJumps = nm.currentWallJumps;
-
-            // Try to initialize previousRocketRideCount from the game's field if present
-            try {
-                previousRocketRideCount = nmT.Field<int>("rocketRides").Value;
-            } catch { previousRocketRideCount = Core.MaxRocketRides; }
-
+            previousRocketRideCount = nm.rocketRides;
         }
 
         private void Update() {
             if (nm == null) return;
 
-            // Wall jump stuff
+            // Wall jump count
             if (previousWallJumps != nm.currentWallJumps) {
                 if (OnWallJumpsChanged != null) OnWallJumpsChanged(Core.MaxWalljumps - nm.currentWallJumps);
                 previousWallJumps = nm.currentWallJumps;
-                //Core.Logger.LogInfo($"Wall jumps changed. {previous}");
             }
 
-            // Rocket ride stuff
-            // Try to detect an integer ride counter on NewMovement (field found via decompiler: "rocketRides")
+            // Rocket ride count
             int currentCount = -1;
-            try {
-                currentCount = nmT.Field<int>("rocketRides").Value;
-            } catch { }
+            currentCount = nm.rocketRides;
 
             if (currentCount >= 0) {
                 if (currentCount != previousRocketRideCount) {
                     if (OnRocketRideCountChanged != null) OnRocketRideCountChanged(currentCount);
                     previousRocketRideCount = currentCount;
                 }
+            }
 
-                return;
+            // Rocket fuel tracking
+            if (nm.ridingRocket != null) {
+                // In ULTRAKILL, rocket flight stability is managed by the private 'downpull' field.
+                // It starts at -0.5 and the rocket begins drooping once it exceeds 0.
+                // We map the range [-0.5, overstay] to [1, 0] so the bar can last slightly into the droop phase.
+                float dp = Traverse.Create(nm.ridingRocket).Field<float>("downpull").Value;
+                float overstay = ConfigManager.crosshairRocketFuelOverstay.value;
+                float fuelAmount = Mathf.InverseLerp(overstay, -0.5f, dp); 
+                if (OnRocketFuelChanged != null) OnRocketFuelChanged(fuelAmount);
+            } else {
+                if (OnRocketFuelChanged != null) OnRocketFuelChanged(0f);
             }
         }
     }

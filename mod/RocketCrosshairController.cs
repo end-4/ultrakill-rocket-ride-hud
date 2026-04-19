@@ -12,8 +12,12 @@ namespace RocketRideHUD {
         private float gapLength;
         private float thickness;
 
+        private int lastRidesSoFar = 0;
         private Image upperPitchLine;
         private Image lowerPitchLine;
+        private Image fuelBar;
+        private Image fuelBarBackground;
+        private float lastTotalWidth;
 
         private void Awake() {
             if (Instance != null && Instance != this) return;
@@ -69,12 +73,17 @@ namespace RocketRideHUD {
             upperPitchLine = CreatePitchLine(container.transform, "UpperPitch");
             lowerPitchLine = CreatePitchLine(container.transform, "LowerPitch");
 
-            SetRocketIndicatorsRotation(ConfigManager.crosshairRocketAlignment.value);
+            // Initialize Fuel Bar
+            fuelBarBackground = CreatePitchLine(container.transform, "FuelBarBackground");
+            fuelBar = CreatePitchLine(container.transform, "FuelBar");
+
+            UpdateRideIndicators(ConfigManager.crosshairRocketAlignment.value);
             SetRocketIndicatorsColor();
             SetRocketIndicatorsActive(ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden);
 
             nm = NewMovement.Instance;
             NewMovementListener.OnRocketRideCountChanged += SetRocketIndicators;
+            NewMovementListener.OnRocketFuelChanged += UpdateFuelBar;
         }
 
         private NewMovement nm;
@@ -94,6 +103,7 @@ namespace RocketRideHUD {
 
         private void OnDestroy() {
             NewMovementListener.OnRocketRideCountChanged -= SetRocketIndicators;
+            NewMovementListener.OnRocketFuelChanged -= UpdateFuelBar;
         }
 
         private void Update() {
@@ -129,7 +139,6 @@ namespace RocketRideHUD {
             float minPitch = ConfigManager.crosshairRocketPitchMin.value;
             float maxPitch = ConfigManager.crosshairRocketPitchMax.value;
             float sens = ConfigManager.crosshairRocketPitchSensitivity.value;
-            float invScale = 1f / Mathf.Max(0.0001f, transform.lossyScale.x);
 
             // Calculate position relative to crosshair using perspective projection (tangent)
             // focalLength is derived so that for small angles, 1 degree = sens pixels.
@@ -141,22 +150,55 @@ namespace RocketRideHUD {
             upperPitchLine.gameObject.SetActive(Mathf.Abs(diffMin) < 1.5f); // ~86 degrees
             lowerPitchLine.gameObject.SetActive(Mathf.Abs(diffMax) < 1.5f);
 
-            upperPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMin) * focalLength * invScale);
-            lowerPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMax) * focalLength * invScale);
+            upperPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMin) * focalLength);
+            lowerPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMax) * focalLength);
 
             upperPitchLine.color = lowerPitchLine.color = ConfigManager.crosshairRocketPitchColor.value;
-            Vector2 size = new Vector2(ConfigManager.crosshairRocketPitchWidth.value * invScale, ConfigManager.crosshairRocketPitchThickness.value * invScale);
+            Vector2 size = new Vector2(ConfigManager.crosshairRocketPitchWidth.value, ConfigManager.crosshairRocketPitchThickness.value);
             upperPitchLine.rectTransform.sizeDelta = lowerPitchLine.rectTransform.sizeDelta = size;
+        }
+
+        public void UpdateFuelBar(float fuel) {
+            if (fuelBar == null) return;
+
+            bool shouldShow = fuel > 0 && ConfigManager.crosshairRocketFuelShow.value && ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden;
+            fuelBar.gameObject.SetActive(shouldShow);
+            if (fuelBarBackground != null) fuelBarBackground.gameObject.SetActive(shouldShow);
+
+            if (!shouldShow) return;
+
+            float yOffset = ConfigManager.crosshairRocketAlignment.value == RocketAlignment.Bottom ? -offset - 12f : offset + 12f;
+            float h = Mathf.Round(thickness);
+            float y = Mathf.Round(yOffset);
+
+            if (fuelBarBackground != null) {
+                Color bgColor = ConfigManager.crosshairRocketUsedColor.value;
+                bgColor.a = ConfigManager.crosshairRocketUsedOpacity.value;
+                fuelBarBackground.color = bgColor;
+                fuelBarBackground.rectTransform.sizeDelta = new Vector2(lastTotalWidth, h);
+                fuelBarBackground.rectTransform.anchoredPosition = new Vector2(0, y);
+            }
+
+            fuelBar.color = ConfigManager.crosshairRocketFuelColor.value;
+            fuelBar.rectTransform.sizeDelta = new Vector2(lastTotalWidth * fuel, h);
+            fuelBar.rectTransform.anchoredPosition = new Vector2(0, y);
         }
 
         // show/hide indicators by count
         public void SetRocketIndicators(int ridesSoFar) {
             if (segments == null) return;
-            int count = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
-            int capped = Mathf.Clamp(count, 0, segments.Length);
+            lastRidesSoFar = ridesSoFar;
+
+            int availableCount = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
+            Color activeColor = ConfigManager.crosshairRocketColor.value;
+            Color usedColor = ConfigManager.crosshairRocketUsedColor.value;
+            usedColor.a = ConfigManager.crosshairRocketUsedOpacity.value;
+
             for (int i = 0; i < segments.Length; i++) {
                 if (segments[i] == null) continue;
-                segments[i].gameObject.SetActive(i < capped && ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden);
+                bool alignmentActive = ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden;
+                segments[i].gameObject.SetActive(alignmentActive);
+                if (alignmentActive) segments[i].color = (i < availableCount) ? activeColor : usedColor;
             }
         }
 
@@ -165,7 +207,7 @@ namespace RocketRideHUD {
             if (!active) {
                 for (int i = 0; i < segments.Length; i++) if (segments[i] != null) segments[i].gameObject.SetActive(false);
             } else {
-                SetRocketIndicators(0);
+                SetRocketIndicators(lastRidesSoFar);
             }
         }
 
@@ -173,6 +215,7 @@ namespace RocketRideHUD {
             if (segments == null) return;
             Color c = ConfigManager.crosshairRocketColor.value;
             for (int i = 0; i < segments.Length; i++) if (segments[i] != null) segments[i].color = c;
+            SetRocketIndicators(lastRidesSoFar);
         }
 
         private float offset = ConfigManager.crosshairRocketOffset.value;
@@ -180,7 +223,7 @@ namespace RocketRideHUD {
         public void SetRocketOffset(float value) {
             offset = value;
             // reapply current rotation/position using stored alignment
-            SetRocketIndicatorsRotation(ConfigManager.crosshairRocketAlignment.value);
+            UpdateRideIndicators(ConfigManager.crosshairRocketAlignment.value);
         }
 
         public void SetRocketIndicatorsThickness(float t) {
@@ -188,34 +231,31 @@ namespace RocketRideHUD {
             if (segments == null) return;
             for (int i = 0; i < segments.Length; i++) if (segments[i] != null) segments[i].rectTransform.sizeDelta = new Vector2(dashLength, thickness);
             // reposition to account for size change
-            SetRocketIndicatorsRotation(ConfigManager.crosshairRocketAlignment.value);
+            UpdateRideIndicators(ConfigManager.crosshairRocketAlignment.value);
         }
 
         public void SetRocketIndicatorsDash(float d) {
             dashLength = d;
             if (segments == null) return;
             for (int i = 0; i < segments.Length; i++) if (segments[i] != null) segments[i].rectTransform.sizeDelta = new Vector2(dashLength, thickness);
-            SetRocketIndicatorsRotation(ConfigManager.crosshairRocketAlignment.value);
+            UpdateRideIndicators(ConfigManager.crosshairRocketAlignment.value);
         }
 
         public void SetRocketIndicatorsGap(float g) {
             gapLength = g;
-            SetRocketIndicatorsRotation(ConfigManager.crosshairRocketAlignment.value);
+            UpdateRideIndicators(ConfigManager.crosshairRocketAlignment.value);
         }
 
-        public void SetRocketIndicatorsRotation(RocketAlignment alignment) {
+        public void UpdateRideIndicators(RocketAlignment alignment) {
             if (segments == null) return;
-            // position horizontally centered and offset depending on alignment
-            // compensate for parent's lossy scale so positions/sizes behave in pixels
-            float invScale = 1f / Mathf.Max(0.0001f, transform.lossyScale.x);
 
-            // Work in local "pixel" units (compensated by invScale) but compute exact edges
-            float dashLocal = dashLength * invScale;
-            float gapLocal = gapLength * invScale;
-            float thicknessLocalF = thickness * invScale;
+            float dashLocal = dashLength;
+            float gapLocal = gapLength;
+            float thicknessLocalF = thickness;
 
             // total width of all segments + gaps
             float totalWidth = segments.Length * dashLocal + (segments.Length - 1) * gapLocal;
+            lastTotalWidth = totalWidth;
             float leftStart = -totalWidth / 2f; // left edge of the first segment
             float yOffset = 0f;
             switch (alignment) {
@@ -239,7 +279,7 @@ namespace RocketRideHUD {
                 float width = Mathf.Max(1f, rightR - leftR);
                 float center = (leftR + rightR) / 2f;
 
-                rect.anchoredPosition = new Vector2(center, Mathf.Round(yOffset * invScale));
+                rect.anchoredPosition = new Vector2(center, Mathf.Round(yOffset));
                 // sizeDelta expects local units; round thickness also
                 rect.sizeDelta = new Vector2(width, Mathf.Round(thicknessLocalF));
             }
