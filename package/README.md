@@ -4,7 +4,7 @@
 - Remaining rocket fuel until it droops down
 - Angle hint for Freeze-Dash+shoot-Unfreeze ride method
 
-<img alt="image" src="https://github.com/user-attachments/assets/6ee07e9b-c1b8-48d5-80c4-b528a13fe619" />
+<img alt="preview" src="https://github.com/user-attachments/assets/b1d19b04-bc82-4598-891e-1783461529f8" />
 
 # Notes
 
