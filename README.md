@@ -1,6 +1,7 @@
 # Rocket ride indicators
 
 - Remaining rocket rides until they're ineffective (max 5-ish, see [ULTRAKILL Wiki](https://ultrakill.fandom.com/wiki/Freezeframe_Rocket_Launcher#Chain_Surfing))
+- Remaining rocket fuel until it droops down
 - Angle hint for Freeze-Dash+shoot-Unfreeze ride method
 - Also still has wall jump indicator from the [original mod](https://github.com/TRPG0/UK-WallJumpHUD) because... why not
 - The colors can be customized

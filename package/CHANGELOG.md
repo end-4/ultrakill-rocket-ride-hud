@@ -4,6 +4,7 @@
 
 - Fixed wrong initial rocket ride count on weapon HUD
 - Added rocket fuel indicator
+- Gave the "used" rocket ride crosshair segments a translucent white (default, configurable) instead of fully hiding
 
 ## 1.0.1
 
