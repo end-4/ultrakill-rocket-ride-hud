@@ -21,6 +21,8 @@ namespace RocketRideHUD {
         public static FloatField crosshairRocketUsedOpacity;
         public static BoolField crosshairRocketFuelShow;
         public static ColorField crosshairRocketFuelColor;
+        public static FloatField crosshairRocketFuelOffset;
+        public static FloatField crosshairRocketFuelWidth;
         public static FloatField crosshairRocketFuelOverstay;
         public static EnumField<RocketAlignment> crosshairRocketAlignment;
         public static FloatField crosshairRocketOffset;
@@ -95,26 +97,25 @@ namespace RocketRideHUD {
             weaponRocketColor.postValueChangeEvent += (Color e) => {
                 if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.UpdateColor();
             };
-            crosshairRocketColor = new ColorField(config.rootPanel, "Crosshair indicator", "crosshairRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
+            crosshairRocketColor = new ColorField(config.rootPanel, "Crosshair: rides", "crosshairRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
             crosshairRocketColor.postValueChangeEvent += (Color e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
             };
-            crosshairRocketUsedColor = new ColorField(config.rootPanel, "Crosshair indicator (Used)", "crosshairRocketUsedColor", new Color(1f, 1f, 1f));
+            crosshairRocketUsedColor = new ColorField(config.rootPanel, "Used rides", "crosshairRocketUsedColor", new Color(1f, 1f, 1f));
             crosshairRocketUsedColor.postValueChangeEvent += (Color e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
             };
-            crosshairRocketUsedOpacity = new FloatField(config.rootPanel, "Crosshair indicator opacity (Used)", "crosshairRocketUsedOpacity", 0.4f);
+            crosshairRocketUsedOpacity = new FloatField(config.rootPanel, "Used rides opacity", "crosshairRocketUsedOpacity", 0.4f);
             crosshairRocketUsedOpacity.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
             };
-            crosshairRocketFuelColor = new ColorField(config.rootPanel, "Fuel bar color", "crosshairRocketFuelColor", new Color(1f, 128f / 255f, 58f / 255f));
-            crosshairRocketOffset = new FloatField(config.rootPanel, "Crosshair: Offset", "crosshairRocketOffset", 40f);
-            crosshairRocketOffset.postValueChangeEvent += (float e) => {
-                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketOffset(e);
-            };
-            crosshairRocketThickness = new FloatField(config.rootPanel, "Crosshair: Thickness", "crosshairRocketThickness", 4f);
+            crosshairRocketThickness = new FloatField(config.rootPanel, "Line thickness", "crosshairRocketThickness", 4f);
             crosshairRocketThickness.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsThickness(e);
+            };
+            crosshairRocketOffset = new FloatField(config.rootPanel, "Crosshair: Rides offset", "crosshairRocketOffset", 40f);
+            crosshairRocketOffset.postValueChangeEvent += (float e) => {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketOffset(e);
             };
             crosshairRocketDash = new FloatField(config.rootPanel, "Crosshair: Dash length", "crosshairRocketDash", 18f);
             crosshairRocketDash.postValueChangeEvent += (float e) => {
@@ -124,6 +125,9 @@ namespace RocketRideHUD {
             crosshairRocketGap.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsGap(e);
             };
+            crosshairRocketFuelColor = new ColorField(config.rootPanel, "Fuel bar color", "crosshairRocketFuelColor", new Color(1f, 128f / 255f, 58f / 255f));
+            crosshairRocketFuelOffset = new FloatField(config.rootPanel, "Fuel bar offset", "crosshairRocketFuelOffset", 48f);
+            crosshairRocketFuelWidth = new FloatField(config.rootPanel, "Fuel bar width", "crosshairRocketFuelWidth", 108f);
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Freezeframe rocket ride angle hint", h2, TextAlignmentOptions.Left);
@@ -146,10 +150,11 @@ namespace RocketRideHUD {
         private static void addAdvancedOptions() {
             addGap(config.rootPanel, h1Gap);
             new ConfigHeader(config.rootPanel, "-- ADVANCED --");
+            new ConfigHeader(config.rootPanel, "Values are approximations based on the mod author's personal testing. Real-world effectiveness can vary depending on timing/reaction. For example, to do a freezeframe ride, you might need to shoot+unfreeze later if you aim lower", subtitle, TextAlignmentOptions.Left);
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
-            crosshairRocketFuelOverstay = new FloatField(config.rootPanel, "Fuel indicator: Overstay amount", "crosshairRocketFuelOverstay", 0.1f);
+            crosshairRocketFuelOverstay = new FloatField(config.rootPanel, "Empty fuel downpull threshold", "crosshairRocketFuelOverstay", 0.1f);
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Freezeframe rocket ride angle hint", h2, TextAlignmentOptions.Left);
