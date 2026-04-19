@@ -1,7 +1,7 @@
 {
     "name": "RocketRideHUD",
     "author": "end_4",
-    "version_number": "1.0.1",
+    "version_number": "1.0.2",
     "website_url": "https://github.com/end-4/ultrakill-rocket-ride-hud",
     "description": "Remaining effective rocket rides indicator and freezeframe ride angle hint",
     "dependencies": [

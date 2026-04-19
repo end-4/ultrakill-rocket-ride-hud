@@ -10,7 +10,7 @@ namespace RocketRideHUD {
         public Image icon;
         public TextMeshProUGUI text;
 
-        private int rides;
+        private int rides = Core.MaxRocketRides;
 
         private void Start() {
             //Core.Logger.LogInfo("RocketRideWeaponController Start");
@@ -40,7 +40,7 @@ namespace RocketRideHUD {
             text = textO.AddComponent<TextMeshProUGUI>();
             text.font = font;
             text.alignment = TextAlignmentOptions.Center;
-            text.text = "0";
+            text.text = rides.ToString();
             text.color = ConfigManager.weaponRocketColor.value;
 
             SetStuffActive(ConfigManager.weaponRocketShow.value);

@@ -1,5 +1,13 @@
 # RocketRideHud
 
+## 1.0.2
+
+- Fixed wrong initial rocket ride count on weapon HUD
+
+## 1.0.1
+
+- Fixed the stretched image in readme
+
 ## 1.0.0
 
 - Added rocket ride indicators
