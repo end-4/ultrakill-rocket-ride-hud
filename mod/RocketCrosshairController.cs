@@ -135,6 +135,7 @@ namespace RocketRideHUD {
 
             float currentPitch = nm.cc.cam.transform.localEulerAngles.x;
             if (currentPitch > 180) currentPitch -= 360; // Normalize to -180 to 180
+            // Core.Logger.LogInfo("Current pitch: "+currentPitch);
 
             float minPitch = ConfigManager.crosshairRocketPitchMin.value;
             float maxPitch = ConfigManager.crosshairRocketPitchMax.value;

@@ -153,9 +153,9 @@ namespace RocketRideHUD {
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Freezeframe rocket ride angle hint", h2, TextAlignmentOptions.Left);
-            crosshairRocketPitchMin = new FloatField(config.rootPanel, "Minimum pitch (degrees)", "rocketPitchMin", 3.8f);
-            crosshairRocketPitchMax = new FloatField(config.rootPanel, "Maximum pitch (degrees)", "rocketPitchMax", 33.8f);
-            crosshairRocketPitchSensitivity = new FloatField(config.rootPanel, "Visual sensitivity (px/degree)", "rocketPitchSensitivity", 7f);
+            crosshairRocketPitchMin = new FloatField(config.rootPanel, "Minimum pitch (degrees)", "rocketPitchMin", 7f);
+            crosshairRocketPitchMax = new FloatField(config.rootPanel, "Maximum pitch (degrees)", "rocketPitchMax", 35f);
+            crosshairRocketPitchSensitivity = new FloatField(config.rootPanel, "Visual sensitivity (px/degree)", "rocketPitchSensitivity", 6f);
         }
 
         public static void Init() {
