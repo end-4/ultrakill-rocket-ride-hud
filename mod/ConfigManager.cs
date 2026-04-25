@@ -14,7 +14,7 @@ namespace RocketRideHUD {
         public static EnumField<CrosshairAlignment> crosshairWallJumpAlignment;
         public static ColorField crosshairWallJumpColor;
 
-        public static BoolField weaponRocketShow;
+        public static EnumField<RocketWeaponHudShow> weaponRocketAlignment;
         public static ColorField weaponRocketColor;
         public static ColorField crosshairRocketColor;
         public static ColorField crosshairRocketUsedColor;
@@ -54,16 +54,17 @@ namespace RocketRideHUD {
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
-            weaponRocketShow = new BoolField(config.rootPanel, "Weapon HUD number", "weaponRocketShow", true);
-            weaponRocketShow.postValueChangeEvent += (bool e) => {
-                if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.SetStuffActive(e);
+            weaponRocketAlignment = new EnumField<RocketWeaponHudShow>(config.rootPanel, "Weapon HUD number", "weaponRocketAlignment", RocketWeaponHudShow.ShowInside);
+            weaponRocketAlignment.postValueChangeEvent += (RocketWeaponHudShow newValue) => {
+                if (RocketCrosshairController.Instance == null) return;
+                RocketRideWeaponController.Instance.UpdateAlignment(newValue);
             };
             crosshairRocketAlignment = new EnumField<RocketAlignment>(config.rootPanel, "Crosshair indicator", "crosshairRocketAlignment", RocketAlignment.Bottom);
             crosshairRocketAlignment.postValueChangeEvent += (RocketAlignment e) => {
-                if (RocketCrosshairController.Instance != null) {
-                    RocketCrosshairController.Instance.UpdateRideIndicators(e);
-                    RocketCrosshairController.Instance.SetRocketIndicatorsActive(e != RocketAlignment.Hidden);
-                }
+                if (RocketCrosshairController.Instance == null) return;
+                RocketCrosshairController.Instance.UpdateRideIndicators(e);
+                RocketCrosshairController.Instance.SetRocketIndicatorsActive(e != RocketAlignment.Hidden);
+
             };
             crosshairRocketFuelShow = new BoolField(config.rootPanel, "Show fuel bar", "crosshairRocketFuelShow", true);
 
@@ -73,11 +74,11 @@ namespace RocketRideHUD {
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Wall jumps", h2, TextAlignmentOptions.Left);
-            weaponWallJumpShow = new BoolField(config.rootPanel, "Weapon HUD number", "weaponShow", true);
+            weaponWallJumpShow = new BoolField(config.rootPanel, "Weapon HUD number", "weaponShow", false);
             weaponWallJumpShow.postValueChangeEvent += (bool e) => {
                 if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.SetStuffActive(e);
             };
-            crosshairWallJumpAlignment = new EnumField<CrosshairAlignment>(config.rootPanel, "Crosshair indicator", "crosshairAlignment", CrosshairAlignment.Right);
+            crosshairWallJumpAlignment = new EnumField<CrosshairAlignment>(config.rootPanel, "Crosshair indicator", "crosshairAlignment", CrosshairAlignment.Hidden);
             crosshairWallJumpAlignment.postValueChangeEvent += (CrosshairAlignment e) => {
                 if (WallJumpCrosshairController.Instance != null) {
                     WallJumpCrosshairController.Instance.SetIconsRotation(e);

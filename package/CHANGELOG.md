@@ -1,5 +1,10 @@
 # RocketRideHud
 
+## 1.0.3
+
+- Made rocket rides crosshair HUD only show when necessary
+- Added option to move the rocket rides count to the sides instead of inside selected weapon indicator
+
 ## 1.0.2
 
 - Fixed wrong initial rocket ride count on weapon HUD
@@ -14,7 +19,7 @@
 
 - Added rocket ride indicators
 
-# WallJumpHUD
+# WallJumpHUD (original mod)
 
 ## 1.0.2
 

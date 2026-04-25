@@ -24,4 +24,9 @@
         HoldingRocketLauncher,
         HoldingFreezeframe
     }
+
+    public enum RocketWeaponHudShow {
+        Hidden,
+        ShowTop, ShowBottom, ShowLeft, ShowRight, ShowInside
+    }
 }

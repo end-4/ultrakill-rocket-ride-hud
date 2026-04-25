@@ -20,6 +20,12 @@ namespace RocketRideHUD {
         private Image fuelBar;
         private Image fuelBarBackground;
 
+        // Fade
+        public float time = 2;
+        public float maxTime = 2;
+        public float minTime = 0;
+        private float opacityMultiplier = 0;
+
         private void Awake() {
             if (Instance != null && Instance != this) return;
             Instance = this;
@@ -83,7 +89,8 @@ namespace RocketRideHUD {
             SetRocketIndicatorsActive(ConfigManager.crosshairRocketAlignment.value != RocketAlignment.Hidden);
 
             nm = NewMovement.Instance;
-            NewMovementListener.OnRocketRideCountChanged += SetRocketIndicators;
+            
+            NewMovementListener.OnRocketRideCountChanged += UpdateRocketIndicators;
             NewMovementListener.OnRocketFuelChanged += UpdateFuelBar;
             NewMovementListener.OnRidingRocketChanged += UpdateFuelBar;
         }
@@ -104,32 +111,32 @@ namespace RocketRideHUD {
         }
 
         private void OnDestroy() {
-            NewMovementListener.OnRocketRideCountChanged -= SetRocketIndicators;
+            NewMovementListener.OnRocketRideCountChanged -= UpdateRocketIndicators;
             NewMovementListener.OnRocketFuelChanged -= UpdateFuelBar;
         }
 
-        private void Update() {
-            bool visibilityCheck = false;
+        private void UpdateFreezeframeHint() {
+            bool freezeframeVisibilityCheck = false;
             switch (ConfigManager.crosshairRocketPitchVisibility.value) {
                 case PitchShowCondition.Never:
-                    visibilityCheck = false;
+                    freezeframeVisibilityCheck = false;
                     break;
                 case PitchShowCondition.Always:
-                    visibilityCheck = true;
+                    freezeframeVisibilityCheck = true;
                     break;
                 case PitchShowCondition.HoldingRocketLauncher:
                     if (GunControl.Instance != null && GunControl.Instance.currentWeapon != null)
-                        visibilityCheck = GunControl.Instance.currentWeapon.GetComponent<RocketLauncher>() != null;
+                        freezeframeVisibilityCheck = GunControl.Instance.currentWeapon.GetComponent<RocketLauncher>() != null;
                     break;
                 case PitchShowCondition.HoldingFreezeframe:
                     if (GunControl.Instance != null && GunControl.Instance.currentWeapon != null) {
                         RocketLauncher rl = GunControl.Instance.currentWeapon.GetComponent<RocketLauncher>();
-                        visibilityCheck = rl != null && rl.variation == 0;
+                        freezeframeVisibilityCheck = rl != null && rl.variation == 0;
                     }
                     break;
             }
 
-            if (nm == null || upperPitchLine == null || !visibilityCheck) {
+            if (nm == null || upperPitchLine == null || !freezeframeVisibilityCheck) {
                 if (upperPitchLine != null) upperPitchLine.gameObject.SetActive(false);
                 if (lowerPitchLine != null) lowerPitchLine.gameObject.SetActive(false);
                 return;
@@ -150,7 +157,7 @@ namespace RocketRideHUD {
             float diffMax = (currentPitch - maxPitch) * Mathf.Deg2Rad;
 
             // Hide lines if they are too far from center (perspective limit)
-            upperPitchLine.gameObject.SetActive(Mathf.Abs(diffMin) < 1.5f); // ~86 degrees
+            upperPitchLine.gameObject.SetActive(Mathf.Abs(diffMin) < 1.5f);
             lowerPitchLine.gameObject.SetActive(Mathf.Abs(diffMax) < 1.5f);
 
             upperPitchLine.rectTransform.anchoredPosition = new Vector2(0, Mathf.Tan(diffMin) * focalLength);
@@ -159,6 +166,28 @@ namespace RocketRideHUD {
             upperPitchLine.color = lowerPitchLine.color = ConfigManager.crosshairRocketPitchColor.value;
             Vector2 size = new Vector2(ConfigManager.crosshairRocketPitchWidth.value, ConfigManager.crosshairRocketPitchThickness.value);
             upperPitchLine.rectTransform.sizeDelta = lowerPitchLine.rectTransform.sizeDelta = size;
+        }
+        
+        private void UpdateRidesVisibility() {
+            bool shouldShow = lastRidesSoFar > 0;
+            if (shouldShow) {
+                SetRidesOpacity(1);
+                time = maxTime;
+            }
+            else {
+                if (time > minTime) time -= Time.deltaTime;
+                SetRidesOpacity(Mathf.Clamp01(time));
+            }
+        }
+
+        private void Update() {
+            UpdateFreezeframeHint();
+            UpdateRidesVisibility();
+        }
+
+        private void SetRidesOpacity(float a) {
+            opacityMultiplier = a;
+            UpdateRocketIndicators(lastRidesSoFar);
         }
 
         public void UpdateFuelBar(float fuel) {
@@ -200,14 +229,15 @@ namespace RocketRideHUD {
         }
 
         // show/hide indicators by count
-        public void SetRocketIndicators(int ridesSoFar) {
+        public void UpdateRocketIndicators(int ridesSoFar) {
             if (segments == null) return;
             lastRidesSoFar = ridesSoFar;
 
             int availableCount = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             Color activeColor = ConfigManager.crosshairRocketColor.value;
             Color usedColor = ConfigManager.crosshairRocketUsedColor.value;
-            usedColor.a = ConfigManager.crosshairRocketUsedOpacity.value;
+            activeColor.a *= opacityMultiplier;
+            usedColor.a = ConfigManager.crosshairRocketUsedOpacity.value * opacityMultiplier;
 
             for (int i = 0; i < segments.Length; i++) {
                 if (segments[i] == null) continue;
@@ -222,7 +252,7 @@ namespace RocketRideHUD {
             if (!active) {
                 for (int i = 0; i < segments.Length; i++) if (segments[i] != null) segments[i].gameObject.SetActive(false);
             } else {
-                SetRocketIndicators(lastRidesSoFar);
+                UpdateRocketIndicators(lastRidesSoFar);
             }
         }
 
@@ -230,7 +260,7 @@ namespace RocketRideHUD {
             if (segments == null) return;
             Color c = ConfigManager.crosshairRocketColor.value;
             for (int i = 0; i < segments.Length; i++) if (segments[i] != null) segments[i].color = c;
-            SetRocketIndicators(lastRidesSoFar);
+            UpdateRocketIndicators(lastRidesSoFar);
         }
 
         private float offset = ConfigManager.crosshairRocketOffset.value;
