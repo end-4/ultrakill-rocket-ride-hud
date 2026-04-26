@@ -9,16 +9,22 @@ namespace RocketRideHUD {
     public class ConfigManager {
         public static PluginConfigurator config = null;
 
+        // General
+        public static BoolField distinctDangerColor;
+        public static ColorField dangerColor;
+
+        // Wall jumps
         public static EnumField<WeaponHudAnchor> weaponWallJumpAlignment;
         public static ColorField weaponWallJumpColor;
         public static EnumField<CrosshairAlignment> crosshairWallJumpAlignment;
         public static ColorField crosshairWallJumpColor;
 
+        // Rockets
         public static EnumField<WeaponHudAnchor> weaponRocketAlignment;
         public static ColorField weaponRocketColor;
         public static ColorField crosshairRocketColor;
-        public static ColorField crosshairRocketUsedColor;
-        public static FloatField crosshairRocketUsedOpacity;
+        public static ColorField usedColor;
+        public static FloatField usedColorOpacity;
         public static BoolField crosshairRocketFuelShow;
         public static ColorField crosshairRocketFuelColor;
         public static FloatField crosshairRocketFuelOffset;
@@ -95,6 +101,27 @@ namespace RocketRideHUD {
             new ConfigHeader(config.rootPanel, "-- CUSTOMIZATION --");
 
             addGap(config.rootPanel, h2Gap);
+            new ConfigHeader(config.rootPanel, "// General", h2, TextAlignmentOptions.Left);
+            distinctDangerColor = new BoolField(config.rootPanel, "Danger color", "distinctDangerColor", true);
+            distinctDangerColor.postValueChangeEvent += (bool e) => {
+                if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.UpdateColor();
+                if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.UpdateColor();
+            };
+            dangerColor = new ColorField(config.rootPanel, "Danger color", "dangerColor", new Color(1f, 44f / 255f, 44f / 255f));
+            dangerColor.postValueChangeEvent += (Color e) => {
+                if (RocketRideWeaponController.Instance != null) RocketRideWeaponController.Instance.UpdateColor();
+                if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.UpdateColor();
+            };
+            usedColor = new ColorField(config.rootPanel, "Used color", "usedColor", new Color(1f, 1f, 1f));
+            usedColor.postValueChangeEvent += (Color e) => {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
+            };
+            usedColorOpacity = new FloatField(config.rootPanel, "Used color opacity", "usedOpacity", 0.4f);
+            usedColorOpacity.postValueChangeEvent += (float e) => {
+                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
+            };
+
+            addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
             weaponRocketColor = new ColorField(config.rootPanel, "Weapon HUD indicator", "weaponRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
             weaponRocketColor.postValueChangeEvent += (Color e) => {
@@ -102,14 +129,6 @@ namespace RocketRideHUD {
             };
             crosshairRocketColor = new ColorField(config.rootPanel, "Crosshair: rides", "crosshairRocketColor", new Color(1f, 128f / 255f, 58f / 255f));
             crosshairRocketColor.postValueChangeEvent += (Color e) => {
-                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
-            };
-            crosshairRocketUsedColor = new ColorField(config.rootPanel, "Used rides", "crosshairRocketUsedColor", new Color(1f, 1f, 1f));
-            crosshairRocketUsedColor.postValueChangeEvent += (Color e) => {
-                if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
-            };
-            crosshairRocketUsedOpacity = new FloatField(config.rootPanel, "Used rides opacity", "crosshairRocketUsedOpacity", 0.4f);
-            crosshairRocketUsedOpacity.postValueChangeEvent += (float e) => {
                 if (RocketCrosshairController.Instance != null) RocketCrosshairController.Instance.SetRocketIndicatorsColor();
             };
             crosshairRocketThickness = new FloatField(config.rootPanel, "Line thickness", "crosshairRocketThickness", 4f);

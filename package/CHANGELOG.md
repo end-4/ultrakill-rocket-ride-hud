@@ -3,7 +3,10 @@
 ## 1.0.3
 
 - Made rocket rides crosshair HUD only show when necessary
-- Made position of the weapon HUD indicators customizable
+- Weapon HUD indicators:
+  - Customizable position (anchor to topleft, topright, etc.)
+  - Turn numbers red when it's 0 (default, customizable and can be turned off)
+
 
 ## 1.0.2
 

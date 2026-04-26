@@ -216,8 +216,8 @@ namespace RocketRideHUD {
             float barWidth = ConfigManager.crosshairRocketFuelWidth.value;
 
             if (fuelBarBackground != null) {
-                Color bgColor = ConfigManager.crosshairRocketUsedColor.value;
-                bgColor.a = ConfigManager.crosshairRocketUsedOpacity.value;
+                Color bgColor = ConfigManager.usedColor.value;
+                bgColor.a = ConfigManager.usedColorOpacity.value;
                 fuelBarBackground.color = bgColor;
                 fuelBarBackground.rectTransform.sizeDelta = new Vector2(barWidth, h);
                 fuelBarBackground.rectTransform.anchoredPosition = new Vector2(0, y);
@@ -235,9 +235,9 @@ namespace RocketRideHUD {
 
             int availableCount = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             Color activeColor = ConfigManager.crosshairRocketColor.value;
-            Color usedColor = ConfigManager.crosshairRocketUsedColor.value;
+            Color usedColor = ConfigManager.usedColor.value;
             activeColor.a *= opacityMultiplier;
-            usedColor.a = ConfigManager.crosshairRocketUsedOpacity.value * opacityMultiplier;
+            usedColor.a = ConfigManager.usedColorOpacity.value * opacityMultiplier;
 
             for (int i = 0; i < segments.Length; i++) {
                 if (segments[i] == null) continue;

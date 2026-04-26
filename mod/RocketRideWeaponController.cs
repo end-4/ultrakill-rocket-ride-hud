@@ -49,7 +49,7 @@ namespace RocketRideHUD {
                 layer = 5
             };
             iconO.transform.SetParent(panel.transform);
-            iconO.transform.localPosition = new Vector3(-10, 0, 0);
+            iconO.transform.localPosition = new Vector3(-9, 0, 0);
             iconO.transform.localRotation = new Quaternion();
             iconO.transform.localScale = new Vector3(0.16f, 0.16f, 0.16f);
             icon = iconO.AddComponent<Image>();
@@ -62,7 +62,7 @@ namespace RocketRideHUD {
                 layer = 5
             };
             textO.transform.SetParent(panel.transform);
-            textO.transform.localPosition = new Vector3(8, 0, 0);
+            textO.transform.localPosition = new Vector3(9, 0, 0);
             textO.transform.localRotation = new Quaternion();
             textO.transform.localScale = new Vector3(1f, 1f, 1f);
             text = textO.AddComponent<TextMeshProUGUI>();
@@ -91,14 +91,16 @@ namespace RocketRideHUD {
             rides = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             if (rides < 0) rides = 0;
             text.text = rides.ToString();
+            UpdateColor();
         }
 
         public void UpdateColor() {
             if (icon == null || text == null) return;
 
             Color c = ConfigManager.weaponRocketColor.value;
+            bool showDangerColor = rides == 0 && ConfigManager.distinctDangerColor.value;
             icon.color = c;
-            text.color = c;
+            text.color = showDangerColor ? ConfigManager.dangerColor.value : c;
         }
 
         public void SetStuffActive(bool active) {

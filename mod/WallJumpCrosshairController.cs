@@ -176,7 +176,7 @@ namespace RocketRideHUD {
         public void SetIconsOpacity(float time) {
             if (crosshair1 == null || crosshair2 == null || crosshair3 == null) return;
 
-            Color color = Core.CrosshairColor;
+            Color color = ConfigManager.crosshairWallJumpColor.value;
             color.a = time;
 
             crosshair1.color = color;

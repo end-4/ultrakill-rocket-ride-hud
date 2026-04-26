@@ -45,12 +45,12 @@ namespace RocketRideHUD {
                 layer = 5
             };
             iconO.transform.SetParent(panel.transform);
-            iconO.transform.localPosition = new Vector3(-9, -0.5f, 0);
+            iconO.transform.localPosition = new Vector3(-8, -0.5f, 0);
             iconO.transform.localRotation = new Quaternion();
             iconO.transform.localScale = new Vector3(0.16f, 0.16f, 0.16f);
             icon = iconO.AddComponent<Image>();
             icon.sprite = SpriteLoader.LoadSpriteFromFile(Path.Combine(Core.workingDir, "assets/wall_jump_weapon_hud.png"));
-            icon.color = Core.WeaponColor;
+            icon.color = ConfigManager.weaponWallJumpColor.value;
 
             // Add text
             GameObject textO = new GameObject {
@@ -58,7 +58,7 @@ namespace RocketRideHUD {
                 layer = 5
             };
             textO.transform.SetParent(panel.transform);
-            textO.transform.localPosition = new Vector3(8, 0, 0);
+            textO.transform.localPosition = new Vector3(9, 0, 0);
             textO.transform.localRotation = new Quaternion();
             textO.transform.localScale = new Vector3(1f, 1f, 1f);
             text = textO.AddComponent<TextMeshProUGUI>();
@@ -66,7 +66,7 @@ namespace RocketRideHUD {
             text.fontSize = 18;
             text.alignment = TextAlignmentOptions.Center;
             text.text = Core.MaxWalljumps.ToString();
-            text.color = Core.WeaponColor;
+            text.color = ConfigManager.weaponWallJumpColor.value;
 
             SetStuffActive(ConfigManager.weaponWallJumpAlignment.value != WeaponHudAnchor.Hidden);
 
@@ -90,6 +90,7 @@ namespace RocketRideHUD {
             if (text == null) return;
             if (number > Core.MaxWalljumps) number = Core.MaxWalljumps;
             text.text = number.ToString();
+            UpdateColor();
         }
 
         public void OnPowerUpChange() {
@@ -102,8 +103,10 @@ namespace RocketRideHUD {
         public void UpdateColor() {
             if (icon == null || text == null) return;
 
-            icon.color = Core.WeaponColor;
-            text.color = Core.WeaponColor;
+            Color c = ConfigManager.weaponWallJumpColor.value;
+            bool showDangerColor = text.text == "0" && ConfigManager.distinctDangerColor.value;
+            icon.color = c;
+            text.color = showDangerColor ? ConfigManager.dangerColor.value : c;
         }
 
         public void SetStuffActive(bool active) {

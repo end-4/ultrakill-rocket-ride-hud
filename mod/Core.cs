@@ -31,18 +31,6 @@ namespace RocketRideHUD {
             }
         }
 
-        public static Color WeaponColor {
-            get {
-                return ConfigManager.weaponWallJumpColor.value;
-            }
-        }
-
-        public static Color CrosshairColor {
-            get {
-                return ConfigManager.crosshairWallJumpColor.value;
-            }
-        }
-
         private void Awake() {
             Harmony Harmony = new Harmony("RocketRideHUD");
             Harmony.PatchAll();
