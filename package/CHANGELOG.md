@@ -7,7 +7,6 @@
   - Customizable position (anchor to topleft, topright, etc.)
   - Turn numbers red when it's 0 (default, customizable and can be turned off)
 
-
 ## 1.0.2
 
 - Fixed wrong initial rocket ride count on weapon HUD
