@@ -2,7 +2,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.ComponentModel.Design.Serialization;
 
 namespace RocketRideHUD {
     public class RocketRideWeaponController : MonoBehaviour {
@@ -33,7 +32,7 @@ namespace RocketRideHUD {
             UpdateAlignment(ConfigManager.weaponRocketAlignment.value);
             rect.sizeDelta = new Vector2(46, 25);
             bgImage = panel.AddComponent<Image>();
-            bgImage.enabled = ConfigManager.weaponRocketAlignment.value != RocketWeaponHudShow.ShowInside;
+            bgImage.enabled = ConfigManager.weaponRocketAlignment.value != WeaponHudAnchor.ShowInside;
             var sourceImage = transform.parent.parent.GetComponent<Image>();
             if (sourceImage != null) {
                 bgImage.sprite = sourceImage.sprite;
@@ -42,6 +41,7 @@ namespace RocketRideHUD {
                 bgImage.color = sourceImage.color;
                 bgImage.material = sourceImage.material;
             }
+            HudOpenEffect hudOpenEffect = panel.AddComponent<HudOpenEffect>();
 
             // Add icon
             GameObject iconO = new GameObject {
@@ -72,16 +72,18 @@ namespace RocketRideHUD {
             text.text = rides.ToString();
             text.color = ConfigManager.weaponRocketColor.value;
 
-            SetStuffActive(ConfigManager.weaponRocketAlignment.value != RocketWeaponHudShow.Hidden);
+            SetStuffActive(ConfigManager.weaponRocketAlignment.value != WeaponHudAnchor.Hidden);
 
-            // subscribe to listener events
+            // Subscribe to events
             NewMovementListener.OnRocketRideCountChanged += SetRides;
-            //Core.Logger.LogInfo("RocketRideWeaponController subscribed to NewMovementListener events");
+            SpeedometerListener.OnSpeedometerEnabled += OnSpeedometerEnabled;
+            SpeedometerListener.OnSpeedometerDisabled += OnSpeedometerDisabled;
         }
 
         private void OnDestroy() {
             NewMovementListener.OnRocketRideCountChanged -= SetRides;
-            //Core.Logger.LogInfo("RocketRideWeaponController OnDestroy");
+            SpeedometerListener.OnSpeedometerEnabled -= OnSpeedometerEnabled;
+            SpeedometerListener.OnSpeedometerDisabled -= OnSpeedometerDisabled;
         }
 
         public void SetRides(int ridesSoFar) {
@@ -89,7 +91,6 @@ namespace RocketRideHUD {
             rides = Mathf.Max(0, Core.MaxRocketRides - ridesSoFar);
             if (rides < 0) rides = 0;
             text.text = rides.ToString();
-            //Core.Logger.LogInfo($"RocketRideWeaponController SetRides: {rides}");
         }
 
         public void UpdateColor() {
@@ -106,32 +107,51 @@ namespace RocketRideHUD {
             panel.SetActive(active);
         }
 
-        public void UpdateAlignment(RocketWeaponHudShow newValue) {
-            if (newValue == RocketWeaponHudShow.Hidden) {
+        private void OnSpeedometerDisabled() {
+            UpdateSpeedometerAdjustment(false);
+        }
+
+        private void OnSpeedometerEnabled() {
+            UpdateSpeedometerAdjustment(true);
+        }
+
+        private bool speedometerShown;
+        public void UpdateSpeedometerAdjustment(bool speedometerShown) {
+            this.speedometerShown = speedometerShown;
+            UpdateAlignment();
+        }
+
+        public void UpdateAlignment() {
+            UpdateAlignment(ConfigManager.weaponRocketAlignment.value);
+        }
+
+        public void UpdateAlignment(WeaponHudAnchor newValue) {
+            if (newValue == WeaponHudAnchor.Hidden) {
                 SetStuffActive(false);
             } else {
-                // top 124, 64  left -124 37 right 171 37 bottom -77 -110
-                // rect.anchoredPosition = new Vector2(124, 64);
                 RectTransform rect = panel.GetComponent<RectTransform>();
                 switch (newValue) {
-                    case RocketWeaponHudShow.ShowTop:
-                        rect.anchoredPosition = new Vector2(124, 64);
+                    case WeaponHudAnchor.ShowTopLeft:
+                        rect.anchoredPosition = new Vector2(-77, speedometerShown ? 89 : 63);
                         break;
-                    case RocketWeaponHudShow.ShowLeft:
+                    case WeaponHudAnchor.ShowTopRight:
+                        rect.anchoredPosition = new Vector2(124, 63);
+                        break;
+                    case WeaponHudAnchor.ShowLeft:
                         rect.anchoredPosition = new Vector2(-124, 37);
                         break;
-                    case RocketWeaponHudShow.ShowRight:
-                        rect.anchoredPosition = new Vector2(171, 37);
+                    case WeaponHudAnchor.ShowRight:
+                        rect.anchoredPosition = new Vector2(171, 38);
                         break;
-                    case RocketWeaponHudShow.ShowBottom:
+                    case WeaponHudAnchor.ShowBottom:
                         rect.anchoredPosition = new Vector2(-77, -110);
                         break;
-                    case RocketWeaponHudShow.ShowInside:
+                    case WeaponHudAnchor.ShowInside:
                         rect.anchoredPosition = new Vector2(-77, 37);
                         break;
                 }
                 if (bgImage == null) return;
-                bgImage.enabled = newValue != RocketWeaponHudShow.ShowInside;
+                bgImage.enabled = newValue != WeaponHudAnchor.ShowInside;
                 SetStuffActive(true);
             }
         }

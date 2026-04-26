@@ -3,7 +3,7 @@
 ## 1.0.3
 
 - Made rocket rides crosshair HUD only show when necessary
-- Added option to move the rocket rides count to the sides instead of inside selected weapon indicator
+- Made position of the weapon HUD indicators customizable
 
 ## 1.0.2
 

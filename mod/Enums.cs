@@ -1,4 +1,4 @@
-﻿namespace RocketRideHUD {
+﻿﻿namespace RocketRideHUD {
     public enum Direction {
         Normal,
         Reverse
@@ -25,8 +25,9 @@
         HoldingFreezeframe
     }
 
-    public enum RocketWeaponHudShow {
+    public enum WeaponHudAnchor {
         Hidden,
-        ShowTop, ShowBottom, ShowLeft, ShowRight, ShowInside
+        ShowInside,
+        ShowTopLeft, ShowTopRight, ShowBottom, ShowLeft, ShowRight
     }
 }

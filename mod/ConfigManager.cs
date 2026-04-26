@@ -9,12 +9,12 @@ namespace RocketRideHUD {
     public class ConfigManager {
         public static PluginConfigurator config = null;
 
-        public static BoolField weaponWallJumpShow;
+        public static EnumField<WeaponHudAnchor> weaponWallJumpAlignment;
         public static ColorField weaponWallJumpColor;
         public static EnumField<CrosshairAlignment> crosshairWallJumpAlignment;
         public static ColorField crosshairWallJumpColor;
 
-        public static EnumField<RocketWeaponHudShow> weaponRocketAlignment;
+        public static EnumField<WeaponHudAnchor> weaponRocketAlignment;
         public static ColorField weaponRocketColor;
         public static ColorField crosshairRocketColor;
         public static ColorField crosshairRocketUsedColor;
@@ -54,10 +54,11 @@ namespace RocketRideHUD {
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
-            weaponRocketAlignment = new EnumField<RocketWeaponHudShow>(config.rootPanel, "Weapon HUD number", "weaponRocketAlignment", RocketWeaponHudShow.ShowInside);
-            weaponRocketAlignment.postValueChangeEvent += (RocketWeaponHudShow newValue) => {
+            weaponRocketAlignment = new EnumField<WeaponHudAnchor>(config.rootPanel, "Weapon HUD number", "weaponRocketAlignment", WeaponHudAnchor.ShowTopLeft);
+            weaponRocketAlignment.postValueChangeEvent += (WeaponHudAnchor newValue) => {
                 if (RocketCrosshairController.Instance == null) return;
                 RocketRideWeaponController.Instance.UpdateAlignment(newValue);
+                WallJumpWeaponController.Instance.UpdateAlignment(weaponWallJumpAlignment.value);
             };
             crosshairRocketAlignment = new EnumField<RocketAlignment>(config.rootPanel, "Crosshair indicator", "crosshairRocketAlignment", RocketAlignment.Bottom);
             crosshairRocketAlignment.postValueChangeEvent += (RocketAlignment e) => {
@@ -74,9 +75,10 @@ namespace RocketRideHUD {
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Wall jumps", h2, TextAlignmentOptions.Left);
-            weaponWallJumpShow = new BoolField(config.rootPanel, "Weapon HUD number", "weaponShow", false);
-            weaponWallJumpShow.postValueChangeEvent += (bool e) => {
-                if (WallJumpWeaponController.Instance != null) WallJumpWeaponController.Instance.SetStuffActive(e);
+            weaponWallJumpAlignment = new EnumField<WeaponHudAnchor>(config.rootPanel, "Weapon HUD number", "weaponWallJumpAlignment", WeaponHudAnchor.Hidden);
+            weaponWallJumpAlignment.postValueChangeEvent += (WeaponHudAnchor newValue) => {
+                if (WallJumpWeaponController.Instance == null) return;
+                WallJumpWeaponController.Instance.UpdateAlignment(newValue);
             };
             crosshairWallJumpAlignment = new EnumField<CrosshairAlignment>(config.rootPanel, "Crosshair indicator", "crosshairAlignment", CrosshairAlignment.Hidden);
             crosshairWallJumpAlignment.postValueChangeEvent += (CrosshairAlignment e) => {
@@ -151,7 +153,7 @@ namespace RocketRideHUD {
         private static void addAdvancedOptions() {
             addGap(config.rootPanel, h1Gap);
             new ConfigHeader(config.rootPanel, "-- ADVANCED --");
-            new ConfigHeader(config.rootPanel, "Values are approximations based on the mod author's personal testing. Real-world effectiveness can vary depending on timing/reaction. For example, to do a freezeframe ride, you might need to shoot+unfreeze later if you aim lower", subtitle, TextAlignmentOptions.Left);
+            new ConfigHeader(config.rootPanel, "Values are approximations based on the mod author's personal testing. Real-world effectiveness can vary depending on timing/reaction. For example, to do a Freezeframe ride, you might need to unfreeze later if you aim lower", subtitle, TextAlignmentOptions.Left);
 
             addGap(config.rootPanel, h2Gap);
             new ConfigHeader(config.rootPanel, "// Rocket rides", h2, TextAlignmentOptions.Left);
